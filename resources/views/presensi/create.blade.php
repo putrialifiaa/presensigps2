@@ -33,10 +33,17 @@
     </div>
     <div class="row" style="margin-top: 20px;">
         <div class="col">
-            <button id="takeabsen" class="btn btn-primary btn-block" style="margin-top: 20px;">
-                <ion-icon name="camera-outline"></ion-icon>
-                Absen Masuk
-            </button>
+            @if ($cek > 0)
+                <button id="takeabsen" class="btn btn-danger btn-block" style="margin-top: 20px;">
+                    <ion-icon name="camera-outline"></ion-icon>
+                    Absen Pulang
+                </button>
+            @else
+                <button id="takeabsen" class="btn btn-primary btn-block" style="margin-top: 20px;">
+                    <ion-icon name="camera-outline"></ion-icon>
+                    Absen Masuk
+                </button>
+            @endif
         </div>
     </div>
     <div class="row mt-2">
@@ -44,13 +51,20 @@
             <div id="map"></div>
         </div>
     </div>
+
+    <!-- Audio notifikasi -->
+    <audio id="notif_in" src="{{ asset('assets/sound/notif_in.mp3') }}" type="audio/mpeg">
+    </audio>
+    <audio id="notif_out" src="{{ asset('assets/sound/notif_out.mp3') }}" type="audio/mpeg">
+    </audio>
+    <audio id="notif_radius" src="{{ asset('assets/sound/notif_radius.mp3') }}" type="audio/mpeg">
+    </audio>
 @endsection
 
 @push('myscript')
     <!-- Mengimpor pustaka webcam.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/webcamjs/1.0.26/webcam.min.js"></script>
 
-    <!-- Tambahkan style untuk elemen webcam -->
     <style>
         .webcam-capture,
         .webcam-capture video {
@@ -59,71 +73,111 @@
             height: auto !important;
             margin: auto;
             border-radius: 15px;
-            /* Radius untuk melengkungkan tepi */
         }
     </style>
 
     <script>
+        var notif_in = document.getElementById('notif_in');
+        var notif_out = document.getElementById('notif_out');
+        var notif_radius = document.getElementById('notif_radius');
+
         // Setel properti webcam
         Webcam.set({
-            height: 480,
-            width: 640,
+            width: 540,
+            height: 430,
             image_format: 'jpeg',
             jpeg_quality: 80
         });
 
-        // Lampirkan webcam ke elemen dengan class .webcam-capture
         Webcam.attach('.webcam-capture');
 
         var lokasi = document.getElementById('lokasi');
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(successCallback, errorCallback);
-        }
 
-        function successCallback(position) {
-            lokasi.value = position.coords.latitude + ', ' + position.coords.longitude;
+        // Inisialisasi Map dengan Leaflet
+        var map = L.map('map').setView([-7.170690135108098, 112.65269280809838], 15);
 
-            // Inisialisasi peta Leaflet
-            var map = L.map('map').setView([position.coords.latitude, position.coords.longitude], 18);
+        // Mengambil tile map dari OpenStreetMap
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
 
-            // Menambahkan tile layer OpenStreetMap
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                maxZoom: 19,
-                attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-            }).addTo(map);
-            var marker = L.marker([position.coords.latitude, position.coords.longitude]).addTo(map);
-            var circle = L.circle([position.coords.latitude, position.coords.longitude], {
-                color: 'red',
-                fillColor: '#f03',
-                fillOpacity: 0.5,
-                radius: 30
-            }).addTo(map);
+        // Menandai lokasi kantor
+        var kantorIcon = L.icon({
+            iconUrl: "{{ asset('assets/img/office-building.png') }}",
+            iconSize: [38, 95],
+        });
 
-            // Menambahkan marker pada posisi pengguna
-            L.marker([position.coords.latitude, position.coords.longitude]).addTo(map)
-                .bindPopup('Lokasi Anda')
+        var kantorMarker = L.marker([-7.170690135108098, 112.65269280809838], {
+            icon: kantorIcon
+        }).addTo(map);
+
+        // Mengambil lokasi user
+        navigator.geolocation.getCurrentPosition(function(position) {
+            var lat = position.coords.latitude;
+            var long = position.coords.longitude;
+
+            lokasi.value = lat + "," + long;
+
+            var userMarker = L.marker([lat, long]).addTo(map)
+                .bindPopup('Lokasi Anda Sekarang')
                 .openPopup();
-        }
 
-        function errorCallback(error) {
-            console.error("Error mendapatkan lokasi: ", error);
-            lokasi.value = "Tidak dapat mengambil lokasi";
-        }
+            map.setView([lat, long], 15);
+        });
 
         $("#takeabsen").click(function(e) {
-            Webcam.snap(function(url) {});
-            varlokasi = $("#lokasi").val();
+            e.preventDefault();
+
+            // Mengambil gambar dari webcam
+            Webcam.snap(function(uri) {
+                image = uri;
+            });
+
+            // Mengirim data melalui AJAX
             $.ajax({
                 type: 'POST',
                 url: '/presensi/store',
                 data: {
                     _token: "{{ csrf_token() }}",
                     image: image,
-                    lokasi: lokasi
+                    lokasi: $("#lokasi").val()
                 },
-                cache: false,
-                success: function(respond) {
-
+                success: function(response) {
+                    if (response.status === "success") {
+                        if (response.type === "in") {
+                            notif_in.play();
+                        } else {
+                            notif_out.play();
+                        }
+                        Swal.fire({
+                            title: 'Berhasil!',
+                            text: response.message,
+                            icon: 'success',
+                            confirmButtonText: 'OK'
+                        });
+                        setTimeout(function() {
+                            window.location.href = '/dashboard';
+                        }, 3000);
+                    } else {
+                        if (response.type === "radius") {
+                            notif_radius.play();
+                        }
+                        Swal.fire({
+                            title: 'Error!',
+                            text: response.message,
+                            icon: 'error',
+                            confirmButtonText: 'OK'
+                        });
+                    }
+                },
+                error: function(xhr) {
+                    var response = JSON.parse(xhr.responseText);
+                    Swal.fire({
+                        title: 'Error!',
+                        text: response.message,
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
                 }
             });
         });

@@ -20,7 +20,7 @@ class Authenticate implements AuthenticatesRequests
     /**
      * The callback that should be used to generate the authentication redirect path.
      *
-     * @var callable
+     * @var callable|null
      */
     protected static $redirectToCallback;
 
@@ -33,18 +33,6 @@ class Authenticate implements AuthenticatesRequests
     public function __construct(Auth $auth)
     {
         $this->auth = $auth;
-    }
-
-    /**
-     * Specify the guards for the middleware.
-     *
-     * @param  string  $guard
-     * @param  string  $others
-     * @return string
-     */
-    public static function using($guard, ...$others)
-    {
-        return static::class.':'.implode(',', [$guard, ...$others]);
     }
 
     /**
@@ -102,7 +90,7 @@ class Authenticate implements AuthenticatesRequests
         throw new AuthenticationException(
             'Unauthenticated.',
             $guards,
-            $request->expectsJson() ? null : $this->redirectTo($request),
+            $request->expectsJson() ? null : $this->redirectTo($request)
         );
     }
 
@@ -113,11 +101,18 @@ class Authenticate implements AuthenticatesRequests
      * @return string|null
      */
     protected function redirectTo(Request $request)
-    {
-        if (static::$redirectToCallback) {
-            return call_user_func(static::$redirectToCallback, $request);
-        }
+{
+    if (!$request->expectsJson()) {
+        if ($request->is('panel/*')) {
+            return route('loginadmin'); // Mengarahkan ke login admin jika URL berisi "panel"
+        } else {
+            return route('login'); // Mengarahkan ke login umum (karyawan)
+            }
+
     }
+    return null;
+}
+
 
     /**
      * Specify the callback that should be used to generate the redirect path.

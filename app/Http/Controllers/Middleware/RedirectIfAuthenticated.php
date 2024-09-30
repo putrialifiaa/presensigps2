@@ -40,6 +40,20 @@ class RedirectIfAuthenticated
      */
     protected function redirectTo(Request $request): ?string
     {
+        // Memeriksa apakah pengguna terautentikasi
+        if (Auth::check()) {
+            $user = Auth::user();
+
+            // Arahkan ke dashboard admin jika peran adalah admin
+            if ($user->role === 'user') {
+                return route('/dashboardadmin'); // Ganti dengan rute dashboard admin Anda
+            }
+            // Arahkan ke dashboard karyawan jika peran adalah karyawan
+            elseif ($user->role === 'karyawan') {
+                return route('/dashboard'); // Ganti dengan rute dashboard karyawan Anda
+            }
+        }
+
         return static::$redirectToCallback
             ? call_user_func(static::$redirectToCallback, $request)
             : $this->defaultRedirectUri();
@@ -60,7 +74,7 @@ class RedirectIfAuthenticated
 
         foreach (['dashboard', 'home'] as $uri) {
             if (isset($routes[$uri])) {
-                return '/'.$uri;
+                return '/panel'.$uri;
             }
         }
 
