@@ -1,17 +1,26 @@
 <?php
 function selisih($jam_masuk, $jam_keluar)
 {
+    // Mengambil jam, menit, dan detik dari waktu masuk
     [$h, $m, $s] = explode(':', $jam_masuk);
     $dtAwal = mktime($h, $m, $s, '1', '1', '1');
+
+    // Mengambil jam, menit, dan detik dari waktu keluar
     [$h, $m, $s] = explode(':', $jam_keluar);
     $dtAkhir = mktime($h, $m, $s, '1', '1', '1');
+
+    // Menghitung selisih dalam detik
     $dtSelisih = $dtAkhir - $dtAwal;
+
+    // Menghitung total menit
     $totalmenit = $dtSelisih / 60;
-    $jam = explode('.', $totalmenit / 60);
-    $sisamenit = $totalmenit / 60 - $jam[0];
-    $sisamenit2 = $totalmenit * 60;
-    $jml_jam = $jam[0];
-    return $jml_jam . ':' . round($sisamenit2);
+
+    // Menghitung jam dan menit
+    $jml_jam = floor($totalmenit / 60); // Menggunakan floor untuk mendapatkan jam
+    $sisamenit = $totalmenit % 60; // Menggunakan modulus untuk mendapatkan sisa menit
+
+    // Format output jam:menit
+    return sprintf('%d:%02d', $jml_jam, $sisamenit);
 }
 ?>
 @foreach ($presensi as $d)
