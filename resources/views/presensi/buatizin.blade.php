@@ -61,6 +61,30 @@
                 autoClose: true // Menutup otomatis setelah memilih
             });
 
+            $("#tgl_izin").change(function(e) {
+                var tgl_izin = $(this).val();
+                $.ajax({
+                    type: 'POST',
+                    url: '/presensi/cekpengajuanizin',
+                    data: {
+                        _token: "{{ csrf_token() }}",
+                        tgl_izin: tgl_izin
+                    },
+                    cache: false,
+                    success: function(respond) {
+                        if (respond == 1) {
+                            Swal.fire({
+                                title: 'Oops !',
+                                text: 'Anda Sudah Melakukan Izin',
+                                icon: 'warning'
+                            }).then((result) => {
+                                $("#tgl_izin").val("");
+                            });
+                        }
+                    }
+                });
+            });
+
             // Pastikan form menggunakan # untuk ID form
             $("#frmizin").submit(function(event) {
                 var tgl_izin = $("#tgl_izin").val();
