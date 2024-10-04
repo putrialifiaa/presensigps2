@@ -20,7 +20,9 @@ class PresensiController extends Controller
             ->where('tgl_presensi', $hariini)
             ->where('nik', $nik)
             ->count();
-        return view('presensi.create', compact('cek'));
+        $lok_kantor = DB::table('konfigurasi_lokasi')->where('id', 1)->first();
+
+        return view('presensi.create', compact('cek', 'lok_kantor'));
     }
 
     // Method untuk menyimpan data presensi (masuk & keluar)
@@ -29,10 +31,12 @@ class PresensiController extends Controller
         $nik = Auth::guard('karyawan')->user()->nik;
         $tgl_presensi = date("Y-m-d");
         $jam = date("H:i:s");
+        $lok_kantor = DB::table('konfigurasi_lokasi')->where('id', 1)->first();
+        $lok = explode(",",$lok_kantor->lokasi_kantor);
 
         // Lokasi kantor (latitude, longitude)
-        $latitudekantor = -7.170690135108098;
-        $longitudekantor = 112.65269280809838;
+        $latitudekantor = $lok[0];
+        $longitudekantor = $lok[1];
 
         // Mendapatkan lokasi user dari request
         $lokasi = $request->lokasi;
@@ -42,8 +46,8 @@ class PresensiController extends Controller
 
         // Menghitung jarak antara lokasi user dan kantor
         $jarak = $this->distance($latitudekantor, $longitudekantor, $latitudeuser, $longitudeuser);
-        $radius = round($jarak['meters']);
-        $maxRadius = 100; // Radius maksimal dalam meter
+        $radius = round($jarak['kilometers']);
+        $maxRadius = 1000; // Radius maksimal dalam meter
 
         if ($radius > $maxRadius) {
             return response()->json([
@@ -381,4 +385,40 @@ class PresensiController extends Controller
 
         return view('presensi.cetakrekap', compact('bulan', 'tahun', 'namabulan', 'rekap'));
     }
-}
+
+    public function izinsakit(){
+        $izinsakit = DB::table('pengajuan_izin')
+        ->join('karyawan', 'pengajuan_izin.nik', '=', 'karyawan.nik')
+        ->orderBy('tgl_izin', 'desc')
+        ->get();
+        return view('presensi.izinsakit', compact('izinsakit'));
+    }
+
+    public function approveizinsakit(Request $request){
+        $status_approved = $request->status_approved;
+        $id_izinsakit_form = $request->id_izinsakit_form; // Perbaikan disini
+        $update = DB::table('pengajuan_izin')
+                    ->where('id', $id_izinsakit_form)
+                    ->update([
+                        'status_approved' => $status_approved
+                    ]);
+
+        if($update){
+            return Redirect::back()->with(['success'=>'Data Berhasil Diupdate']);
+        } else {
+            return Redirect::back()->with(['warning'=>'Data Gagal Diupdate']);
+        }
+    }
+
+    public function batalkanizinsakit($id){
+        $update = DB::table('pengajuan_izin')->where('id', $id)->update([
+                        'status_approved' => 0
+                    ]);
+
+        if($update){
+            return Redirect::back()->with(['success'=>'Data Berhasil Diupdate']);
+        } else {
+            return Redirect::back()->with(['warning'=>'Data Gagal Diupdate']);
+        }
+    }
+    }
