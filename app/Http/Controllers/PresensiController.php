@@ -385,6 +385,50 @@ class PresensiController extends Controller
         ->groupByRaw('presensi.nik, nama_lengkap')
         ->get();
 
+        if (isset($_POST['exportexcel'])) {
+            $time = date("d-M-Y_H-i-s");
+            header("Content-Type: application/vnd.ms-excel");
+            header("Content-Disposition: attachment; filename=Rekap_Presensi_Karyawan_$time.xls");
+
+            // Mulai output HTML untuk Excel
+            echo "<html xmlns:x=\"urn:schemas-microsoft-com:office:excel\">";
+            echo "<head>";
+            echo "<meta http-equiv=\"content-type\" content=\"application/vnd.ms-excel; charset=UTF-8\">";
+            echo "</head>";
+            echo "<body>";
+            echo "<table border='1' cellpadding='5' cellspacing='0'>";
+            echo "<thead>";
+            echo "<tr>";
+            echo "<th>NIK</th>";
+            echo "<th>Nama Lengkap</th>";
+
+            // Menambahkan tanggal
+            for ($i = 1; $i <= 31; $i++) {
+                echo "<th>$i</th>";
+            }
+            echo "</tr>";
+            echo "</thead>";
+            echo "<tbody>";
+
+            foreach ($rekap as $row) {
+                echo "<tr>";
+                echo "<td>{$row->nik}</td>";
+                echo "<td>{$row->nama_lengkap}</td>";
+
+                // Menambahkan data untuk setiap tanggal
+                for ($i = 1; $i <= 31; $i++) {
+                    echo "<td>{$row->{'tgl_' . $i}}</td>";
+                }
+                echo "</tr>";
+            }
+
+            echo "</tbody>";
+            echo "</table>";
+            echo "</body>";
+            echo "</html>";
+            exit;
+        }
+
         return view('presensi.cetakrekap', compact('bulan', 'tahun', 'namabulan', 'rekap'));
     }
 

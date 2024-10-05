@@ -10,4 +10,8 @@ class KonfigurasiController extends Controller
     {
         return view('konfigurasi.lokasikantor');
     }
+
+    public function jamkerja(){
+        return view('konfigurasi.jamkerja');
+    }
 }
