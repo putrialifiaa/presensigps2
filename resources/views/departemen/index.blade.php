@@ -286,13 +286,17 @@
                 var form = $(this).closest('form');
                 e.preventDefault();
                 Swal.fire({
-                    title: "Apakah Anda Yakin Untuk Menghapus Data Ini?",
+                    title: "Apakah Anda Yakin Menghapus Data Ini?",
+                    text: "Data Akan Dihapus Permanen",
+                    icon: 'warning',
                     showCancelButton: true,
-                    confirmButtonText: "Delete",
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: "Delete!",
                 }).then((result) => {
                     if (result.isConfirmed) {
                         form.submit();
-                        Swal.fire("Deleted!", "", "success")
+                        Swal.fire('Deleted!', 'Data Berhasil Dihapus', 'success')
                     }
                 });
             });
