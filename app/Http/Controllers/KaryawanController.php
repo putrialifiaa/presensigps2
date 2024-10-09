@@ -28,8 +28,8 @@ class KaryawanController extends Controller
 
         $karyawan = $query->paginate(perPage: 10);
         $departemen = DB::table('departemen')->get();
-
-        return view('karyawan.index', compact('karyawan', 'departemen'));
+        $cabang = DB::table('cabang')->orderBy('kode_cabang')->get();
+        return view('karyawan.index', compact('karyawan', 'departemen', 'cabang'));
     }
 
     public function store(Request $request) {
@@ -51,6 +51,7 @@ class KaryawanController extends Controller
         $no_hp = $request->no_hp;
         $kode_dept = $request->kode_dept;
         $password = Hash::make('12345');
+        $kode_cabang = $request->kode_cabang;
 
         // Mengatur nama file foto
         if ($request->hasFile('foto')) {
@@ -69,6 +70,7 @@ class KaryawanController extends Controller
             $karyawan->kode_dept = $kode_dept;
             $karyawan->foto = $foto;
             $karyawan->password = $password;
+            $karyawan->kode_cabang = $kode_cabang;
 
             // Simpan data ke database
             if ($karyawan->save()) {
@@ -92,15 +94,19 @@ class KaryawanController extends Controller
     public function edit(Request $request) {
         $nik = $request->nik;
         $departemen = DB::table('departemen')->get();
+        $cabang = DB::table('cabang')->orderBy('kode_cabang')->get();
         $karyawan = DB::table('karyawan')->where('nik', $nik)->first();
-        return view('karyawan.edit', compact ('departemen', 'karyawan'));
+        return view('karyawan.edit', compact ('departemen', 'karyawan', 'cabang'));
     }
 
     public function update($nik, Request $request){
+        $nik = $request->nik;
         $nama_lengkap = $request->nama_lengkap;
         $jabatan = $request->jabatan;
         $no_hp = $request->no_hp;
         $kode_dept = $request->kode_dept;
+        $password = Hash::make('12345');
+        $kode_cabang = $request->kode_cabang;
         $old_foto = $request->old_foto;
 
         // Mengatur nama file foto
@@ -123,6 +129,8 @@ class KaryawanController extends Controller
             $karyawan->no_hp = $no_hp;
             $karyawan->kode_dept = $kode_dept;
             $karyawan->foto = $foto;
+            $karyawan->password = $password;
+            $karyawan->kode_cabang = $kode_cabang;
 
             // Simpan data ke database
             if ($karyawan->save()) {
