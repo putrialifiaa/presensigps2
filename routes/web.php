@@ -6,6 +6,7 @@ use App\Http\Controllers\PresensiController;
 use App\Http\Controllers\KaryawanController;
 use App\Http\Controllers\DepartemenController;
 use App\Http\Controllers\KonfigurasiController;
+use App\Http\Controllers\CabangController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['guest:karyawan'])->group(function () {
@@ -78,6 +79,12 @@ Route::middleware(['auth:user'])->group(function () {
     Route::post('/presensi/approveizinsakit', [PresensiController::class, 'approveizinsakit']);
     Route::get('/presensi/{id}/batalkanizinsakit', [PresensiController::class, 'batalkanizinsakit']);
 
+    //Cabang
+    Route::get('/cabang', [CabangController::class, 'index']);
+    Route::post('/cabang/store', [CabangController::class, 'store']);
+    Route::post('/cabang/edit', [CabangController::class, 'edit']);
+    Route::post('/cabang/update', [CabangController::class, 'update']);
+    Route::delete('/cabang/{kode_cabang}/delete', [CabangController::class, 'delete']);
 
     //Konfigurasi
     Route::get('/konfigurasi/lokasikantor', [KonfigurasiController::class, 'lokasikantor']);

@@ -221,9 +221,9 @@
                     </a>
                 </li>
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle {{ request()->is(['karyawan', 'departemen']) ? 'show' : '' }}"
+                    <a class="nav-link dropdown-toggle {{ request()->is(['karyawan', 'departemen', ' cabang']) ? 'show' : '' }}"
                         href="#navbar-base" data-bs-toggle="dropdown" data-bs-auto-close="false" role="button"
-                        aria-expanded="{{ request()->is(['karyawan', 'departemen']) ? 'true' : '' }}">
+                        aria-expanded="{{ request()->is(['karyawan', 'departemen', 'cabang']) ? 'true' : '' }}">
                         <span
                             class="nav-link-icon d-md-none d-lg-inline-block"><!-- Download SVG icon from http://tabler-icons.io/i/package -->
                             <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24"
@@ -241,7 +241,7 @@
                             Data Master
                         </span>
                     </a>
-                    <div class="dropdown-menu {{ request()->is(['karyawan', 'departemen']) ? 'show' : '' }}">
+                    <div class="dropdown-menu {{ request()->is(['karyawan', 'departemen', 'cabang']) ? 'show' : '' }}">
                         <div class="dropdown-menu-columns">
                             <div class="dropdown-menu-column">
                                 <a class="dropdown-item {{ request()->is(['karyawan']) ? 'active' : '' }}"
@@ -251,6 +251,10 @@
                                 <a class="dropdown-item {{ request()->is(['departemen']) ? 'active' : '' }}"
                                     href="/departemen">
                                     Departemen
+                                </a>
+                                <a class="dropdown-item {{ request()->is(['cabang']) ? 'active' : '' }}"
+                                    href="/cabang">
+                                    Kantor Cabang
                                 </a>
                             </div>
                         </div>
