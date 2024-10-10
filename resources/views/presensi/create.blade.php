@@ -95,11 +95,11 @@
 
         // Inisialisasi Map dengan Leaflet
         var map = L.map('map').setView([-7.170690135108098, 112.65269280809838], 15);
-        var lokasi_kantor = "{{ $lok_kantor->lokasi_kantor }}";
+        var lokasi_kantor = "{{ $lok_kantor->lokasi_cabang }}";
         var lok = lokasi_kantor.split(",");
         var lat_kantor = lok[0];
         var long_kantor = lok[1];
-        var radius = "{{ $lok_kantor->radius }}";
+        var radius = "{{ $lok_kantor->radius_cabang }}";
         // Mengambil tile map dari OpenStreetMap
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '© OpenStreetMap contributors'

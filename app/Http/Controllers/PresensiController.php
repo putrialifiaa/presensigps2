@@ -22,7 +22,8 @@ class PresensiController extends Controller
             ->where('tgl_presensi', $hariini)
             ->where('nik', $nik)
             ->count();
-        $lok_kantor = DB::table('konfigurasi_lokasi')->where('id', 1)->first();
+        $kode_cabang = Auth::guard('karyawan')->user()->kode_cabang;
+        $lok_kantor = DB::table('cabang')->where('kode_cabang', $kode_cabang)->first();
 
         return view('presensi.create', compact('cek', 'lok_kantor'));
     }
@@ -31,10 +32,11 @@ class PresensiController extends Controller
     public function store(Request $request)
     {
         $nik = Auth::guard('karyawan')->user()->nik;
+        $kode_cabang = Auth::guard('karyawan')->user()->kode_cabang;
         $tgl_presensi = date("Y-m-d");
         $jam = date("H:i:s");
-        $lok_kantor = DB::table('konfigurasi_lokasi')->where('id', 1)->first();
-        $lok = explode(",",$lok_kantor->lokasi_kantor);
+        $lok_kantor = DB::table('cabang')->where('kode_cabang', $kode_cabang)->first();
+        $lok = explode(",",$lok_kantor->lokasi_cabang);
 
         // Lokasi kantor (latitude, longitude)
         $latitudekantor = $lok[0];
@@ -48,14 +50,14 @@ class PresensiController extends Controller
 
         // Menghitung jarak antara lokasi user dan kantor
         $jarak = $this->distance($latitudekantor, $longitudekantor, $latitudeuser, $longitudeuser);
-        $radius = round($jarak['meters']);
-        $maxRadius = 1000000; // Radius maksimal dalam meter
+        $radius_cabang = round($jarak['meters']);
+        $maxRadius = 1000; // Radius maksimal dalam meter
 
-        if ($radius > $maxRadius) {
+        if ($radius_cabang > $maxRadius) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Anda berada di luar jangkauan radius kantor',
-                'distance' => $radius,
+                'message' => 'Anda berada di luar jangkauan radius',
+                'distance' => $radius_cabang,
                 'type' => 'radius'
             ], 400);
         }
