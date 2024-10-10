@@ -137,12 +137,13 @@
                                                     <td>{{ $d->kode_cabang }}</td>
                                                     <td>
                                                         <div class="btn-group">
-                                                            <a href="#" class="edit" nik="{{ $d->nik }}">
+                                                            <a href="#" class="edit btn btn-primary btn-sm"
+                                                                nik="{{ $d->nik }}" title="Edit">
                                                                 <svg xmlns="http://www.w3.org/2000/svg" width="24"
                                                                     height="24" viewBox="0 0 24 24" fill="none"
                                                                     stroke="currentColor" stroke-width="2"
                                                                     stroke-linecap="round" stroke-linejoin="round"
-                                                                    class="icon icon-tabler icons-tabler-outline icon-tabler-edit">
+                                                                    class="icon icon-tabler icon-tabler-edit">
                                                                     <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                                                                     <path
                                                                         d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" />
@@ -151,16 +152,32 @@
                                                                     <path d="M16 5l3 3" />
                                                                 </svg>
                                                             </a>
+                                                            <a href="/konfigurasi/{{ $d->nik }}/setjamkerja"
+                                                                class="btn btn-success btn-sm">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="24"
+                                                                    height="24" viewBox="0 0 24 24" fill="none"
+                                                                    stroke="currentColor" stroke-width="2"
+                                                                    stroke-linecap="round" stroke-linejoin="round"
+                                                                    class="icon icon-tabler icon-tabler-settings">
+                                                                    <path stroke="none" d="M0 0h24v24H0z"
+                                                                        fill="none" />
+                                                                    <path
+                                                                        d="M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065z" />
+                                                                    <path d="M9 12a3 3 0 1 0 6 0a3 3 0 0 0 -6 0" />
+                                                                </svg>
+                                                            </a>
                                                             <form action="/karyawan/{{ $d->nik }}/delete"
-                                                                method="POST" style="margin-left:5px">
+                                                                method="POST" style="display: inline;">
                                                                 @csrf
                                                                 @method('DELETE')
-                                                                <a class="btn btn-danger btn-sm delete-confirm">
+                                                                <button type="submit"
+                                                                    class="btn btn-danger btn-sm delete-confirm"
+                                                                    title="Delete">
                                                                     <svg xmlns="http://www.w3.org/2000/svg" width="24"
                                                                         height="24" viewBox="0 0 24 24" fill="none"
                                                                         stroke="currentColor" stroke-width="2"
                                                                         stroke-linecap="round" stroke-linejoin="round"
-                                                                        class="icon icon-tabler icons-tabler-outline icon-tabler-trash">
+                                                                        class="icon icon-tabler icon-tabler-trash">
                                                                         <path stroke="none" d="M0 0h24v24H0z"
                                                                             fill="none" />
                                                                         <path d="M4 7l16 0" />
@@ -171,7 +188,7 @@
                                                                         <path
                                                                             d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
                                                                     </svg>
-                                                                </a>
+                                                                </button>
                                                             </form>
                                                         </div>
 
