@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
+use App\Models\Setjamkerja;
+
 
 class KonfigurasiController extends Controller
 {
@@ -104,5 +106,29 @@ class KonfigurasiController extends Controller
         $karyawan = DB::table('karyawan')->where('nik', $nik)->first();
         $jamkerja = DB::table('jam_kerja')->orderBy('nama_jam_kerja')->get();
         return view('konfigurasi.setjamkerja', compact('karyawan', 'jamkerja'));
+    }
+
+    public function storesetjamkerja(Request $request)
+    {
+        $nik = $request->nik;
+        $hari = $request->hari;
+        $kode_jam_kerja = $request->kode_jam_kerja;
+
+        for($i = 0; $i < count($hari); $i++) {
+            $data[] = [
+                'nik' => $nik,
+                'hari' => $hari[$i],
+                'kode_jam_kerja' => $kode_jam_kerja[$i]
+             ];
+        }
+
+        try {
+            Setjamkerja::insert($data);
+            return redirect('/karyawan')->with(['success'=>'Jam Kerja Berhasil Disimpan']);
+        } catch (\Exception $e) {
+            return redirect('/karyawan')->with(['warning'=>'Jam Kerja Gagal Disimpan']);
+
+           // dd($e);
+        }
     }
 }
