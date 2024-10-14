@@ -30,7 +30,7 @@
                 @endif
             </div>
             <div id="user-info">
-                <h2 id="user-name">{{ Auth::guard('karyawan')->user()->nama_lengkap }}</h2>
+                <h3 id="user-name">{{ Auth::guard('karyawan')->user()->nama_lengkap }}</h3>
                 <span id="user-role">{{ Auth::guard('karyawan')->user()->jabatan }}</span>
                 <span id="user-role">({{ Auth::guard('karyawan')->user()->kode_cabang }})</span>
             </div>

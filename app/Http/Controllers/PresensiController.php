@@ -14,9 +14,50 @@ use App\Models\Pengajuanizin;
 class PresensiController extends Controller
 {
     // Method untuk halaman create (presensi)
+    public function gethari()
+    {
+        $hari = date("D");
+
+        switch ($hari) {
+            case 'Sun':
+                $hari_ini = "Minggu";
+                break;
+
+                case 'Mon':
+                $hari_ini = "Senin";
+                break;
+
+                case 'Tue':
+                $hari_ini = "Selasa";
+                break;
+
+                case 'Wed':
+                $hari_ini = "Rabu";
+                break;
+
+                case 'Thu':
+                $hari_ini = "Kamis";
+                break;
+
+                case 'Fri':
+                $hari_ini = "Jumat";
+                break;
+
+                case 'Sat':
+                $hari_ini = "Sabtu";
+                break;
+
+                default:
+                $hari_ini = "Tidak Diketahui";
+                break;
+                }
+                return $hari_ini;
+    }
+
     public function create()
     {
         $hariini = date("Y-m-d");
+        $namahari = $this->gethari();
         $nik = Auth::guard('karyawan')->user()->nik;
         $cek = DB::table('presensi')
             ->where('tgl_presensi', $hariini)
@@ -24,8 +65,11 @@ class PresensiController extends Controller
             ->count();
         $kode_cabang = Auth::guard('karyawan')->user()->kode_cabang;
         $lok_kantor = DB::table('cabang')->where('kode_cabang', $kode_cabang)->first();
+        $jamkerja = DB::table('konfigurasi_jamkerja')
+        ->join('jam_kerja', 'konfigurasi_jamkerja.kode_jam_kerja', '=', 'jam_kerja.kode_jam_kerja')
+        ->where('nik', $nik)->where('hari', $namahari)->first();
 
-        return view('presensi.create', compact('cek', 'lok_kantor'));
+        return view('presensi.create', compact('cek', 'lok_kantor', 'jamkerja'));
     }
 
     // Method untuk menyimpan data presensi (masuk & keluar)
@@ -51,6 +95,11 @@ class PresensiController extends Controller
         // Menghitung jarak antara lokasi user dan kantor
         $jarak = $this->distance($latitudekantor, $longitudekantor, $latitudeuser, $longitudeuser);
         $radius_cabang = round($jarak['meters']);
+        $namahari = $this->gethari();
+        $jamkerja = DB::table('konfigurasi_jamkerja')
+        ->join('jam_kerja', 'konfigurasi_jamkerja.kode_jam_kerja', '=', 'jam_kerja.kode_jam_kerja')
+        ->where('nik', $nik)->where('hari', $namahari)->first();
+
         $maxRadius = 1000; // Radius maksimal dalam meter
 
         if ($radius_cabang > $maxRadius) {
