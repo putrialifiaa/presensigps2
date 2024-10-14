@@ -74,87 +74,110 @@ class PresensiController extends Controller
 
     // Method untuk menyimpan data presensi (masuk & keluar)
     public function store(Request $request)
-    {
-        $nik = Auth::guard('karyawan')->user()->nik;
-        $kode_cabang = Auth::guard('karyawan')->user()->kode_cabang;
-        $tgl_presensi = date("Y-m-d");
-        $jam = date("H:i:s");
-        $lok_kantor = DB::table('cabang')->where('kode_cabang', $kode_cabang)->first();
-        $lok = explode(",",$lok_kantor->lokasi_cabang);
+{
+    $nik = Auth::guard('karyawan')->user()->nik;
+    $kode_cabang = Auth::guard('karyawan')->user()->kode_cabang;
+    $tgl_presensi = date("Y-m-d");
+    $jam = date("H:i:s");
+    $lok_kantor = DB::table('cabang')->where('kode_cabang', $kode_cabang)->first();
+    $lok = explode(",", $lok_kantor->lokasi_cabang);
 
-        // Lokasi kantor (latitude, longitude)
-        $latitudekantor = $lok[0];
-        $longitudekantor = $lok[1];
+    // Lokasi kantor (latitude, longitude)
+    $latitudekantor = $lok[0];
+    $longitudekantor = $lok[1];
 
-        // Mendapatkan lokasi user dari request
-        $lokasi = $request->lokasi;
-        $lokasiuser = explode(",", $lokasi);
-        $latitudeuser = $lokasiuser[0];
-        $longitudeuser = $lokasiuser[1];
+    // Mendapatkan lokasi user dari request
+    $lokasi = $request->lokasi;
+    $lokasiuser = explode(",", $lokasi);
+    $latitudeuser = $lokasiuser[0];
+    $longitudeuser = $lokasiuser[1];
 
-        // Menghitung jarak antara lokasi user dan kantor
-        $jarak = $this->distance($latitudekantor, $longitudekantor, $latitudeuser, $longitudeuser);
-        $radius_cabang = round($jarak['meters']);
-        $namahari = $this->gethari();
-        $jamkerja = DB::table('konfigurasi_jamkerja')
+    // Menghitung jarak antara lokasi user dan kantor
+    $jarak = $this->distance($latitudekantor, $longitudekantor, $latitudeuser, $longitudeuser);
+    $radius_cabang = round($jarak['meters']);
+    $namahari = $this->gethari();
+    $jamkerja = DB::table('konfigurasi_jamkerja')
         ->join('jam_kerja', 'konfigurasi_jamkerja.kode_jam_kerja', '=', 'jam_kerja.kode_jam_kerja')
         ->where('nik', $nik)->where('hari', $namahari)->first();
 
-        $maxRadius = 1000; // Radius maksimal dalam meter
+    $maxRadius = 10000; // Radius maksimal dalam meter
 
-        if ($radius_cabang > $maxRadius) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Anda berada di luar jangkauan radius',
-                'distance' => $radius_cabang,
-                'type' => 'radius'
-            ], 400);
-        }
+    if ($radius_cabang > $maxRadius) {
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Anda berada di luar jangkauan radius',
+            'distance' => $radius_cabang,
+            'type' => 'radius'
+        ], 400);
+    }
 
-        $cek = DB::table('presensi')->where('tgl_presensi', $tgl_presensi)
-            ->where('nik', $nik)->count();
+    $cek = DB::table('presensi')->where('tgl_presensi', $tgl_presensi)
+        ->where('nik', $nik)->count();
 
-        $ket = ($cek > 0) ? "out" : "in";
+    $ket = ($cek > 0) ? "out" : "in";
 
-        // Proses penyimpanan gambar presensi
-        $image = $request->image;
-        $image_parts = explode(";base64,", $image);
+    // Proses penyimpanan gambar presensi
+    $image = $request->image;
+    $image_parts = explode(";base64,", $image);
 
-        if (count($image_parts) == 2) {
-            $image_base64 = base64_decode($image_parts[1]);
-            $fileName = $nik . "-" . $tgl_presensi . "-" . $ket . ".png";
+    if (count($image_parts) == 2) {
+        $image_base64 = base64_decode($image_parts[1]);
+        $fileName = $nik . "-" . $tgl_presensi . "-" . $ket . ".png";
 
-            // Simpan file gambar
-            $imageSaved = Storage::disk('public')->put("uploads/absensi/" . $fileName, $image_base64);
+        // Simpan file gambar
+        $imageSaved = Storage::disk('public')->put("uploads/absensi/" . $fileName, $image_base64);
 
-            if ($imageSaved) {
-                if ($cek > 0) {
-                    // Jika sudah absen, update data jam_out
-                    $data_pulang = [
-                        'jam_out' => $jam,
-                        'foto_out' => $fileName,
-                        'lokasi_out' => $lokasi,
-                    ];
-                    $update = DB::table('presensi')
-                        ->where('tgl_presensi', $tgl_presensi)
-                        ->where('nik', $nik)
-                        ->update($data_pulang);
-
-                    if ($update) {
-                        return response()->json([
-                            'status' => 'success',
-                            'message' => 'Selamat Pulang, Terima Kasih untuk kerja hari ini',
-                            'type' => 'out'
-                        ]);
-                    } else {
-                        return response()->json([
-                            'status' => 'error',
-                            'message' => 'Gagal memperbarui data presensi pulang',
-                            'type' => 'out'
-                        ], 500);
-                    }
+        if ($imageSaved) {
+            if ($cek > 0) {
+                if ($jam < $jamkerja->jam_pulang){
+                    return response()->json([
+                        'status' => 'error',
+                        'message' => 'Belum Jam Pulang',
+                        'type' => 'out'
+                    ], 500);
                 } else {
-                    // Jika belum absen, simpan data masuk
+// Jika sudah absen, update data jam_out
+$data_pulang = [
+    'jam_out' => $jam,
+    'foto_out' => $fileName,
+    'lokasi_out' => $lokasi,
+];
+$update = DB::table('presensi')
+    ->where('tgl_presensi', $tgl_presensi)
+    ->where('nik', $nik)
+    ->update($data_pulang);
+
+if ($update) {
+    return response()->json([
+        'status' => 'success',
+        'message' => 'Selamat Pulang, Terima Kasih untuk kerja hari ini',
+        'type' => 'out'
+    ]);
+} else {
+    return response()->json([
+        'status' => 'error',
+        'message' => 'Gagal memperbarui data presensi pulang',
+        'type' => 'out'
+    ], 500);
+}
+                }
+
+            } else {
+                // Jika belum absen, cek apakah sudah masuk jam absen
+                if ($jam < $jamkerja->awal_jam_masuk) {
+                    return response()->json([
+                        'status' => 'error',
+                        'message' => 'Belum Jam Absen',
+                        'type' => 'in'
+                    ], 400);
+                } else if($jam > $jamkerja->akhir_jam_masuk) {
+                    return response()->json([
+                        'status' => 'error',
+                        'message' => 'Jam Absen Habis',
+                        'type' => 'in'
+                    ], 400);
+                } else {
+                    // Simpan data presensi masuk
                     $data_masuk = [
                         'nik' => $nik,
                         'tgl_presensi' => $tgl_presensi,
@@ -178,21 +201,23 @@ class PresensiController extends Controller
                         ], 500);
                     }
                 }
-            } else {
-                return response()->json([
-                    'status' => 'error',
-                    'message' => 'Gagal menyimpan gambar presensi',
-                    'type' => 'image'
-                ], 500);
             }
         } else {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Gagal memproses gambar presensi',
+                'message' => 'Gagal menyimpan gambar presensi',
                 'type' => 'image'
             ], 500);
         }
+    } else {
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Gagal memproses gambar presensi',
+            'type' => 'image'
+        ], 500);
     }
+}
+
 
     // Fungsi untuk menghitung jarak antara dua titik koordinat
     function distance($lat1, $lon1, $lat2, $lon2)
