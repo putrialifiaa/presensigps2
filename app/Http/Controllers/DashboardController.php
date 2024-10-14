@@ -29,8 +29,10 @@ class DashboardController extends Controller
         ->whereRaw('YEAR(tgl_presensi) = ?', [$tahunini])
         ->orderBy('tgl_presensi')
         ->get();
+
     $rekappresensi = DB::table('presensi')
-    ->selectRaw('COUNT(nik) as jumlah_hadir, SUM(IF(jam_in >"07:30",1,0)) as jumlah_terlambat')
+    ->selectRaw('COUNT(nik) as jumlah_hadir, SUM(IF(jam_in > jam_masuk ,1,0)) as jumlah_terlambat')
+    ->leftJoin('jam_kerja', 'presensi.kode_jam_kerja', '=','jam_kerja.kode_jam_kerja')
     ->where('nik', $nik)
         ->whereRaw('MONTH(tgl_presensi) = ?', [$bulanini])
         ->whereRaw('YEAR(tgl_presensi) = ?', [$tahunini])

@@ -95,6 +95,8 @@ class PresensiController extends Controller
     // Menghitung jarak antara lokasi user dan kantor
     $jarak = $this->distance($latitudekantor, $longitudekantor, $latitudeuser, $longitudeuser);
     $radius_cabang = round($jarak['meters']);
+
+    //Cek Jam Kerja Karyawan
     $namahari = $this->gethari();
     $jamkerja = DB::table('konfigurasi_jamkerja')
         ->join('jam_kerja', 'konfigurasi_jamkerja.kode_jam_kerja', '=', 'jam_kerja.kode_jam_kerja')
@@ -136,31 +138,31 @@ class PresensiController extends Controller
                         'type' => 'out'
                     ], 500);
                 } else {
-// Jika sudah absen, update data jam_out
-$data_pulang = [
-    'jam_out' => $jam,
-    'foto_out' => $fileName,
-    'lokasi_out' => $lokasi,
-];
-$update = DB::table('presensi')
-    ->where('tgl_presensi', $tgl_presensi)
-    ->where('nik', $nik)
-    ->update($data_pulang);
+                // Jika sudah absen, update data jam_out
+                $data_pulang = [
+                    'jam_out' => $jam,
+                    'foto_out' => $fileName,
+                    'lokasi_out' => $lokasi,
+                ];
+                $update = DB::table('presensi')
+                    ->where('tgl_presensi', $tgl_presensi)
+                    ->where('nik', $nik)
+                    ->update($data_pulang);
 
-if ($update) {
-    return response()->json([
-        'status' => 'success',
-        'message' => 'Selamat Pulang, Terima Kasih untuk kerja hari ini',
-        'type' => 'out'
-    ]);
-} else {
-    return response()->json([
-        'status' => 'error',
-        'message' => 'Gagal memperbarui data presensi pulang',
-        'type' => 'out'
-    ], 500);
-}
+                if ($update) {
+                    return response()->json([
+                        'status' => 'success',
+                        'message' => 'Selamat Pulang, Terima Kasih untuk kerja hari ini',
+                        'type' => 'out'
+                    ]);
+                } else {
+                    return response()->json([
+                        'status' => 'error',
+                        'message' => 'Gagal memperbarui data presensi pulang',
+                        'type' => 'out'
+                    ], 500);
                 }
+            }
 
             } else {
                 // Jika belum absen, cek apakah sudah masuk jam absen
@@ -184,6 +186,7 @@ if ($update) {
                         'jam_in' => $jam,
                         'foto_in' => $fileName,
                         'lokasi_in' => $lokasi,
+                        'kode_jam_kerja' => $jamkerja->kode_jam_kerja
                     ];
                     $simpan = DB::table('presensi')->insert($data_masuk);
 
@@ -365,7 +368,8 @@ if ($update) {
     public function getpresensi(Request $request){
         $tanggal = $request->tanggal;
         $presensi = DB::table('presensi')
-        ->select('presensi.*','nama_lengkap','nama_dept')
+        ->select('presensi.*','nama_lengkap','karyawan.kode_dept', 'jam_masuk', 'nama_jam_kerja', 'jam_masuk', 'jam_pulang')
+        ->leftJoin('jam_kerja', 'presensi.kode_jam_kerja', '=', 'jam_kerja.kode_jam_kerja')
         ->join('karyawan','presensi.nik','=','karyawan.nik')
         ->join('departemen','karyawan.kode_dept','=','departemen.kode_dept')
         ->where('tgl_presensi', $tanggal)
@@ -401,6 +405,7 @@ if ($update) {
         ->first();
 
         $presensi = DB::table('presensi')
+        ->leftJoin('jam_kerja', 'presensi.kode_jam_kerja', '=', 'jam_kerja.kode_jam_kerja')
         ->where('nik', $nik) // Gunakan koma untuk pemisah antara kolom dan variabel
         ->whereRaw('MONTH(tgl_presensi) = ?', [$bulan]) // whereRaw() dengan parameter binding
         ->whereRaw('YEAR(tgl_presensi) = ?', [$tahun])  // whereRaw() dengan parameter binding
@@ -431,7 +436,7 @@ if ($update) {
         $namabulan = ["", "Januari", "Februari", "Maret", "April", "Mei", "Juni",
             "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
         $rekap = DB::table('presensi')
-        ->selectRaw('presensi.nik, nama_lengkap,
+        ->selectRaw('presensi.nik, nama_lengkap, jam_masuk, jam_pulang,
             MAX(IF(DAY(tgl_presensi) = 1, CONCAT(jam_in, "-",IFNULL(jam_out,"00:00:00")), "")) as tgl_1,
             MAX(IF(DAY(tgl_presensi) = 2, CONCAT(jam_in, "-",IFNULL(jam_out,"00:00:00")), "")) as tgl_2,
             MAX(IF(DAY(tgl_presensi) = 3, CONCAT(jam_in, "-",IFNULL(jam_out,"00:00:00")), "")) as tgl_3,
@@ -464,9 +469,10 @@ if ($update) {
             MAX(IF(DAY(tgl_presensi) = 30, CONCAT(jam_in, "-",IFNULL(jam_out,"00:00:00")), "")) as tgl_30,
             MAX(IF(DAY(tgl_presensi) = 31, CONCAT(jam_in, "-",IFNULL(jam_out,"00:00:00")), "")) as tgl_31')
         ->join('karyawan', 'presensi.nik', '=', 'karyawan.nik')
+        ->leftJoin('jam_kerja', 'presensi.kode_jam_kerja', '=', 'jam_kerja.kode_jam_kerja')
         ->whereRaw('MONTH(tgl_presensi)="'.$bulan.'"')
         ->whereRaw('YEAR(tgl_presensi)="'.$tahun.'"')
-        ->groupByRaw('presensi.nik, nama_lengkap')
+        ->groupByRaw('presensi.nik, nama_lengkap, jam_masuk, jam_pulang')
         ->get();
 
         if (isset($_POST['exportexcel'])) {

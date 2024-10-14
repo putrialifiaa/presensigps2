@@ -32,7 +32,8 @@ function selisih($jam_masuk, $jam_keluar)
         <td>{{ $loop->iteration }}</td>
         <td>{{ $d->nik }}</td>
         <td>{{ $d->nama_lengkap }}</td>
-        <td>{{ $d->nama_dept }}</td>
+        <td>{{ $d->kode_dept }}</td>
+        <td>{{ $d->nama_jam_kerja }} ({{ $d->jam_masuk }} s/d {{ $d->jam_pulang }})</td>
         <td>{{ $d->jam_in }}</td>
         <td>
             <img src="{{ url($foto_in) }}" class="avatar" alt="">
@@ -54,9 +55,9 @@ function selisih($jam_masuk, $jam_keluar)
 
         </td>
         <td>
-            @if ($d->jam_in >= '07:30')
+            @if ($d->jam_in >= $d->jam_masuk)
                 @php
-                    $jamterlambat = selisih('07:30:00', $d->jam_in);
+                    $jamterlambat = selisih($d->jam_masuk, $d->jam_in);
                 @endphp
                 <span class="badge bg-danger text-white">Terlambat {{ $jamterlambat }}</span>
             @else
