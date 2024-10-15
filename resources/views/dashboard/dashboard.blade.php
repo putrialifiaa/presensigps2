@@ -219,27 +219,70 @@
             </div>
             <div class="tab-content mt-2" style="margin-bottom:100px;">
                 <div class="tab-pane fade show active" id="home" role="tabpanel">
-                    <ul class="listview image-listview">
-                        @foreach ($historibulanini as $d)
-                            @php
-                                $path = Storage::url('uploads/absensi/' . $d->foto_in);
-                            @endphp
-                            <li>
-                                <div class="item">
-                                    <div class="icon-box bg-primary">
-                                        <ion-icon name="image-outline" role="img" class="md hydrated"
-                                            aria-label="image outline"></ion-icon>
+                    <!-------
+                                                                                                                                                <ul class="listview image-listview">
+                                                                                                                                                    @foreach ($historibulanini as $d)
+    @php
+        $path = Storage::url('uploads/absensi/' . $d->foto_in);
+    @endphp
+                                                                                                                                                        <li>
+                                                                                                                                                            <div class="item">
+                                                                                                                                                                <div class="icon-box bg-primary">
+                                                                                                                                                                    <ion-icon name="image-outline" role="img" class="md hydrated"
+                                                                                                                                                                        aria-label="image outline"></ion-icon>
+                                                                                                                                                                </div>
+                                                                                                                                                                <div class="in">
+                                                                                                                                                                    <div>{{ date('d-m-y', strtotime($d->tgl_presensi)) }}</div>
+                                                                                                                                                                    <span class="badge badge-success">{{ $d->jam_in }}</span>
+                                                                                                                                                                    <span
+                                                                                                                                                                        class="badge badge-danger">{{ $presensihariini !== null && $d->jam_out !== null ? $d->jam_out : 'Belum Absen' }}</span>
+                                                                                                                                                                </div>
+                                                                                                                                                            </div>
+                                                                                                                                                        </li>
+    @endforeach
+                                                                                                                                                </ul>
+                                                                                                                                            ga dihapus sp tau nnti dipake lgi------>
+                    <style>
+                        .historicontent {
+                            display: flex;
+                        }
+
+                        .datapresensi {
+                            margin-left: 10px;
+                        }
+                    </style>
+                    @foreach ($historibulanini as $d)
+                        <div class="card" style="margin-bottom: 10px; padding: 10px;">
+                            <div class="card-body" style="padding: 5px;">
+                                <div class="historicontent" style="display: flex; align-items: center;">
+                                    <div class="iconpresensi" style="flex-shrink: 0;">
+                                        <ion-icon name="finger-print-outline" style="font-size: 30px;"
+                                            class="text-success"></ion-icon>
                                     </div>
-                                    <div class="in">
-                                        <div>{{ date('d-m-y', strtotime($d->tgl_presensi)) }}</div>
-                                        <span class="badge badge-success">{{ $d->jam_in }}</span>
-                                        <span
-                                            class="badge badge-danger">{{ $presensihariini !== null && $d->jam_out !== null ? $d->jam_out : 'Belum Absen' }}</span>
+                                    <div class="datapresensi" style="line-height: 1.2; margin-left: 10px;">
+                                        <h3 style="margin: 0; font-size: 14px;">{{ $d->nama_jam_kerja }}</h3>
+                                        <h4 style="margin: 0; font-size: 14px;">
+                                            {{ date('d-m-Y', strtotime($d->tgl_presensi)) }}</h4>
+                                        <span style="margin: 0; font-size: 14px;">
+                                            {!! $d->jam_in != null ? date('H:i', strtotime($d->jam_in)) : '<span class="text-danger">Belum Absen</span>' !!}
+                                        </span>
+                                        <span style="margin: 0; font-size: 14px;">
+                                            {!! $d->jam_out != null
+                                                ? '=' . date('H:i', strtotime($d->jam_out))
+                                                : '<span class="text-danger">- Belum Absen</span>' !!}
+                                        </span>
+                                        <br>
+                                        <span>
+                                            {!! date('H:i', strtotime($d->jam_in)) > date('H:i', strtotime($d->jam_masuk))
+                                                ? '<span class="text-danger">Terlambat</span>'
+                                                : '<span class="text-success">Tepat Waktu</span>' !!}
+                                        </span>
                                     </div>
                                 </div>
-                            </li>
-                        @endforeach
-                    </ul>
+                            </div>
+                        </div>
+                    @endforeach
+
                 </div>
                 <div class="tab-pane fade" id="profile" role="tabpanel">
                     <ul class="listview image-listview">
