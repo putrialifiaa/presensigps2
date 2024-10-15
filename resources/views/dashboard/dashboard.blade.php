@@ -220,28 +220,28 @@
             <div class="tab-content mt-2" style="margin-bottom:100px;">
                 <div class="tab-pane fade show active" id="home" role="tabpanel">
                     <!-------
-                                                                                                                                                <ul class="listview image-listview">
-                                                                                                                                                    @foreach ($historibulanini as $d)
+                                                                                                                                                                                            <ul class="listview image-listview">
+                                                                                                                                                                                                @foreach ($historibulanini as $d)
     @php
         $path = Storage::url('uploads/absensi/' . $d->foto_in);
     @endphp
-                                                                                                                                                        <li>
-                                                                                                                                                            <div class="item">
-                                                                                                                                                                <div class="icon-box bg-primary">
-                                                                                                                                                                    <ion-icon name="image-outline" role="img" class="md hydrated"
-                                                                                                                                                                        aria-label="image outline"></ion-icon>
-                                                                                                                                                                </div>
-                                                                                                                                                                <div class="in">
-                                                                                                                                                                    <div>{{ date('d-m-y', strtotime($d->tgl_presensi)) }}</div>
-                                                                                                                                                                    <span class="badge badge-success">{{ $d->jam_in }}</span>
-                                                                                                                                                                    <span
-                                                                                                                                                                        class="badge badge-danger">{{ $presensihariini !== null && $d->jam_out !== null ? $d->jam_out : 'Belum Absen' }}</span>
-                                                                                                                                                                </div>
-                                                                                                                                                            </div>
-                                                                                                                                                        </li>
+                                                                                                                                                                                                    <li>
+                                                                                                                                                                                                        <div class="item">
+                                                                                                                                                                                                            <div class="icon-box bg-primary">
+                                                                                                                                                                                                                <ion-icon name="image-outline" role="img" class="md hydrated"
+                                                                                                                                                                                                                    aria-label="image outline"></ion-icon>
+                                                                                                                                                                                                            </div>
+                                                                                                                                                                                                            <div class="in">
+                                                                                                                                                                                                                <div>{{ date('d-m-y', strtotime($d->tgl_presensi)) }}</div>
+                                                                                                                                                                                                                <span class="badge badge-success">{{ $d->jam_in }}</span>
+                                                                                                                                                                                                                <span
+                                                                                                                                                                                                                    class="badge badge-danger">{{ $presensihariini !== null && $d->jam_out !== null ? $d->jam_out : 'Belum Absen' }}</span>
+                                                                                                                                                                                                            </div>
+                                                                                                                                                                                                        </div>
+                                                                                                                                                                                                    </li>
     @endforeach
-                                                                                                                                                </ul>
-                                                                                                                                            ga dihapus sp tau nnti dipake lgi------>
+                                                                                                                                                                                            </ul>
+                                                                                                                                                                                        ga dihapus sp tau nnti dipake lgi------>
                     <style>
                         .historicontent {
                             display: flex;
@@ -271,12 +271,35 @@
                                                 ? '=' . date('H:i', strtotime($d->jam_out))
                                                 : '<span class="text-danger">- Belum Absen</span>' !!}
                                         </span>
-                                        <br>
-                                        <span>
-                                            {!! date('H:i', strtotime($d->jam_in)) > date('H:i', strtotime($d->jam_masuk))
-                                                ? '<span class="text-danger">Terlambat</span>'
-                                                : '<span class="text-success">Tepat Waktu</span>' !!}
-                                        </span>
+                                        <div id="keterangan" class="mt-2">
+                                            @php
+                                                //Jam Ketika Absen
+                                                $jam_in = date('H:i', strtotime($d->jam_in));
+
+                                                //Jam Jadwal Masuk
+                                                $jam_masuk = date('H:i', strtotime($d->jam_masuk));
+
+                                                $jadwal_jam_masuk = $d->tgl_presensi . ' ' . $jam_masuk;
+                                                $jam_presensi = $d->tgl_presensi . ' ' . $jam_in;
+                                            @endphp
+                                            @if ($jam_in > $jam_masuk)
+                                                @php
+                                                    $jmlterlambat = hitungjamterlambat(
+                                                        $jadwal_jam_masuk,
+                                                        $jam_presensi,
+                                                    );
+                                                    $jmlterlambatdesimal = hitungjamterlambatdesimal(
+                                                        $jadwal_jam_masuk,
+                                                        $jam_presensi,
+                                                    );
+                                                @endphp
+                                                <span class="danger">Terlambat {{ $jmlterlambat }}
+                                                    ({{ $jmlterlambatdesimal }} Jam)
+                                                </span>
+                                            @else
+                                                <span style="color:green">Tepat Waktu</span>
+                                            @endif
+                                        </div>
                                     </div>
                                 </div>
                             </div>
