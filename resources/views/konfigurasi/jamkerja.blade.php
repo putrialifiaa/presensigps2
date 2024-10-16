@@ -308,6 +308,10 @@
 @push('myscript')
     <script>
         $(function() {
+            $("#awal_jam_masuk").mask("00:00");
+            $("#jam_masuk").mask("00:00");
+            $("#akhir_jam_masuk").mask("00:00");
+            $("#jam_pulang").mask("00:00");
             $("#btnTambahJK").click(function() {
                 $("#modal-inputjk").modal("show");
             });

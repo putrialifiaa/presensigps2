@@ -239,8 +239,8 @@
                                             <path d="M19 11l0 2" />
                                         </svg>
                                     </span>
-                                    <input type="text" value="" id="nik" class="form-control"
-                                        placeholder="NIK" name="nik">
+                                    <input type="text" maxlength="5" value="" id="nik"
+                                        class="form-control" placeholder="NIK" name="nik">
                                 </div>
                             </div>
                         </div>
@@ -375,6 +375,8 @@
     <script>
         $(function() {
             // Memunculkan modal saat tombol tambah karyawan diklik
+            $("#nik").mask("00000");
+            $("#no_hp").mask("0000000000000");
             $("#btnTambahKaryawan").click(function() {
                 $("#modal-inputkaryawan").modal("show");
             });
@@ -423,9 +425,10 @@
                 var nama_lengkap = $("#nama_lengkap").val();
                 var jabatan = $("#jabatan").val();
                 var no_hp = $("#no_hp").val();
-                var kode_dept = $("frmKaryawan").find("#kode_dept")
+                var kode_dept = $("#frmKaryawan").find("#kode_dept")
                     .val(); // Perbaikan: gunakan ID yang benar
-
+                var kode_cabang = $("#frmKaryawan").find("#kode_cabang")
+                    .val(); // Perbaikan: gunakan ID yang benar
 
                 // Validasi jika NIK kosong
                 if (nik == "") {
@@ -484,6 +487,18 @@
                         confirmButtonText: 'Ok'
                     }).then(() => {
                         $("#kode_dept").focus();
+                    });
+
+                    e.preventDefault();
+                    return false;
+                } else if (kode_cabang == "") {
+                    Swal.fire({
+                        title: 'Warning!',
+                        text: 'Cabang Harus Diisi',
+                        icon: 'warning',
+                        confirmButtonText: 'Ok'
+                    }).then(() => {
+                        $("#kode_cabang").focus();
                     });
 
                     e.preventDefault();
