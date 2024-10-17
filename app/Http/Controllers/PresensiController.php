@@ -59,6 +59,7 @@ class PresensiController extends Controller
         $hariini = date("Y-m-d");
         $namahari = $this->gethari();
         $nik = Auth::guard('karyawan')->user()->nik;
+        $kode_dept = Auth::guard('karyawan')->user()->kode_dept;
         $cek = DB::table('presensi')
             ->where('tgl_presensi', $hariini)
             ->where('nik', $nik)
@@ -69,7 +70,20 @@ class PresensiController extends Controller
         ->join('jam_kerja', 'konfigurasi_jamkerja.kode_jam_kerja', '=', 'jam_kerja.kode_jam_kerja')
         ->where('nik', $nik)->where('hari', $namahari)->first();
 
-        return view('presensi.create', compact('cek', 'lok_kantor', 'jamkerja'));
+        if($jamkerja == null) {
+            $jamkerja = DB::table('konfigurasi_jk_dept_detail')
+            ->join('konfigurasi_jk_dept','konfigurasi_jk_dept_detail.kode_jk_dept','=','konfigurasi_jk_dept.kode_jk_dept')
+            ->join('jam_kerja', 'konfigurasi_jk_dept_detail.kode_jam_kerja', '=', 'jam_kerja.kode_jam_kerja')
+            ->where('kode_dept', $kode_dept)
+            ->where('kode_cabang', $kode_cabang)
+            ->where('hari', $namahari)->first();
+        }
+
+        if($jamkerja == null) {
+                return view('presensi.notifjadwal');
+            } else {
+            return view('presensi.create', compact('cek', 'lok_kantor', 'jamkerja'));
+        }
     }
 
     // Method untuk menyimpan data presensi (masuk & keluar)
@@ -249,6 +263,7 @@ class PresensiController extends Controller
         $nik = Auth::guard('karyawan')->user()->nik;
         $nama_lengkap = $request->nama_lengkap;
         $no_hp = $request->no_hp;
+        $password = Hash::make($request->password);
         $karyawan = DB::table('karyawan')->where('nik', $nik)->first();
 
         if ($request->hasFile('foto')) {
