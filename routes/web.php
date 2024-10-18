@@ -7,6 +7,7 @@ use App\Http\Controllers\KaryawanController;
 use App\Http\Controllers\DepartemenController;
 use App\Http\Controllers\KonfigurasiController;
 use App\Http\Controllers\CabangController;
+use App\Http\Controllers\IzinabsenController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['guest:karyawan'])->group(function () {
@@ -45,6 +46,10 @@ Route::middleware('auth:karyawan')->group(function () {
     Route::get('/presensi/buatizin', [PresensiController::class, 'buatizin']);
     Route::post('/presensi/storeizin', [PresensiController::class, 'storeizin']);
     Route::post('/presensi/cekpengajuanizin', [PresensiController::class, 'cekpengajuanizin']);
+
+    //Izin Absen
+    Route::get('/izinabsen', [IzinabsenController::class, 'create']);
+
 });
 
 // Rute untuk Admin
@@ -104,5 +109,6 @@ Route::middleware(['auth:user'])->group(function () {
     Route::get('/konfigurasi/jamkerjadept/{kode_jk_dept}/edit', [KonfigurasiController::class, 'editjamkerjadept']);
     Route::post('konfigurasi/jamkerjadept/{kode_jk_dept}/update', [KonfigurasiController::class, 'updatejamkerjadept']);
     Route::get('konfigurasi/jamkerjadept/{kode_jk_dept}/delete', [KonfigurasiController::class, 'deletejamkerjadept']);
+
 
 });

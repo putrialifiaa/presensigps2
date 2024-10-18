@@ -69,17 +69,17 @@
             <ion-icon name="add-outline" role="img" class="md hydrated" aria-label="add outline"></ion-icon>
         </a>
         <div class="dropdown-menu">
-            <a class="dropdown-item bg-primary" href="/pengajuanizin/createizinabsen">
+            <a class="dropdown-item bg-primary" href="/izinabsen">
                 <ion-icon name="document-outline" role="img" class="md hydrated" aria-label="image outline"></ion-icon>
                 <p>Izin</p>
             </a>
 
-            <a class="dropdown-item bg-primary" href="/pengajuanizin/createsakit">
+            <a class="dropdown-item bg-primary" href="/izinsakit">
                 <ion-icon name="document-outline" role="img" class="md hydrated"
                     aria-label="videocam outline"></ion-icon>
                 <p>Sakit</p>
             </a>
-            <a class="dropdown-item bg-primary" href="/pengajuanizin/createcuti">
+            <a class="dropdown-item bg-primary" href="/izincuti">
                 <ion-icon name="document-outline" role="img" class="md hydrated"
                     aria-label="videocam outline"></ion-icon>
                 <p>Cuti</p>
