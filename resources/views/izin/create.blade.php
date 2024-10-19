@@ -26,18 +26,18 @@
 @section('content')
     <div class="row" style="margin-top:70px">
         <div class="col">
-            <form method="POST" action="/presensi/storeizin" id="frmizin">
+            <form method="POST" action="/izinabsen/store" id="frmizin">
                 @csrf
                 <div class="form-group">
-                    <input type="text" id="tgl_izin_dari" name="tgl_izin_dari" class="form-control datepicker"
-                        placeholder="Dari">
+                    <input type="text" id="tgl_izin_dari" autocomplete="off" name="tgl_izin_dari"
+                        class="form-control datepicker" placeholder="Dari">
                 </div>
                 <div class="form-group">
-                    <input type="text" id="tgl_izin_sampai" name="tgl_izin_sampai" class="form-control datepicker"
-                        placeholder="Sampai">
+                    <input type="text" id="tgl_izin_sampai" autocomplete="off" name="tgl_izin_sampai"
+                        class="form-control datepicker" placeholder="Sampai">
                 </div>
                 <div class="form-group">
-                    <input type="text" id="jml_hari" name="jml_hari" class="form-control datepicker"
+                    <input type="text" readonly id="jml_hari" name="jml_hari" class="form-control" autocomplete="off"
                         placeholder="Jumlah Hari">
                 </div>
                 <div class="form-group">

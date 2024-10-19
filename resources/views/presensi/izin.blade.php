@@ -35,27 +35,65 @@
     <div class="row">
         <div class="col">
             @foreach ($dataizin as $d)
-                <ul class="listview image-listview">
-                    <li>
-                        <div class="item">
-                            <div class="in">
-                                <div>
-                                    <b>{{ date('d-m-Y', strtotime($d->tgl_izin)) }}
-                                        ({{ $d->status == 's' ? 'Sakit' : 'Izin' }})
-                                    </b><br>
-                                    <small class="text-muted">{{ $d->keterangan }}</small>
-                                </div>
-                                @if ($d->status_approved == 0)
-                                    <span class="badge bg-warning">Waiting</span>
-                                @elseif ($d->status_approved == 1)
-                                    <span class="badge bg-success">Approved</span>
-                                @elseif ($d->status_approved == 2)
-                                    <span class="badge bg-danger">Dismissed</span>
-                                @endif
+                @php
+                    if ($d->status == 'i') {
+                        $status = 'Izin';
+                    } elseif ($d->status == 's') {
+                        $status = 'Sakit';
+                    } elseif ($d->status == 'c') {
+                        $status = 'Cuti';
+                    } else {
+                        $status = 'Not Found';
+                    }
+                @endphp
+                <div class="card" style="margin-bottom: 10px; padding: 10px;">
+                    <div class="card-body" style="padding: 5px;">
+                        <div class="historicontent" style="display: flex; align-items: center;">
+                            <div class="iconpresensi" style="flex-shrink: 0;">
+                                <ion-icon name="document-text-outline"
+                                    style="font-size: 35px; color:cornflowerblue"></ion-icon>
+                            </div>
+                            <div class="datapresensi" style="line-height: 1.2; margin-left: 10px;">
+                                <h3 style="margin: 0 0 5px 0; font-size: 16px;">
+                                    {{ date('d-m-Y', strtotime($d->tgl_izin_dari)) }} ({{ $status }})</h3>
+
+                                <small style="font-size: 15px;">
+                                    {{ date('d-m-Y', strtotime($d->tgl_izin_dari)) }} s/d
+                                    {{ date('d-m-Y', strtotime($d->tgl_izin_sampai)) }}
+                                </small>
+                                <p style="font-size: 15px;">{{ $d->keterangan }}</p>
+                            </div>
+                            <div class="status" style="margin-left: auto; align-self: flex-start;">
+                                <span class="badge bg-success">Test</span>
                             </div>
                         </div>
-                    </li>
-                </ul>
+                    </div>
+                </div>
+
+
+                <!--
+                                                                                        <ul class="listview image-listview">
+                                                                                            <li>
+                                                                                                <div class="item">
+                                                                                                    <div class="in">
+                                                                                                        <div>
+                                                                                                            <b>{{ date('d-m-Y', strtotime($d->tgl_izin_dari)) }}
+                                                                                                                ({{ $d->status == 's' ? 'Sakit' : 'Izin' }})
+    </b><br>
+                                                                                                            <small class="text-muted">{{ $d->keterangan }}</small>
+                                                                                                        </div>
+                                                                                                        @if ($d->status_approved == 0)
+    <span class="badge bg-warning">Waiting</span>
+@elseif ($d->status_approved == 1)
+    <span class="badge bg-success">Approved</span>
+@elseif ($d->status_approved == 2)
+    <span class="badge bg-danger">Dismissed</span>
+    @endif
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </li>
+                                                                                        </ul>
+                                                                                    -->
             @endforeach
         </div>
     </div>

@@ -49,6 +49,7 @@ Route::middleware('auth:karyawan')->group(function () {
 
     //Izin Absen
     Route::get('/izinabsen', [IzinabsenController::class, 'create']);
+    Route::post('/izinabsen/store', [IzinabsenController::class, 'store']);
 
 });
 

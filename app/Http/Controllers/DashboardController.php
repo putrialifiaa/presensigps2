@@ -50,8 +50,8 @@ class DashboardController extends Controller
     $rekapizin = DB::table('pengajuan_izin')
     ->selectRaw('SUM(IF(status="i", 1, 0)) as jmlizin, SUM(IF(status="s", 1, 0)) as jmlsakit')
     ->where('nik', $nik)
-    ->whereRaw('MONTH(tgl_izin) = ?', [$bulanini])
-        ->whereRaw('YEAR(tgl_izin) = ?', [$tahunini])
+    ->whereRaw('MONTH(tgl_izin_dari) = ?', [$bulanini])
+        ->whereRaw('YEAR(tgl_izin_dari) = ?', [$tahunini])
     ->where('status_approved', 1)
     ->first();
 
@@ -70,7 +70,7 @@ class DashboardController extends Controller
     $rekapizin = DB::table('pengajuan_izin')
     ->selectRaw('SUM(IF(status="i", 1, 0)) as jmlizin, SUM(IF(status="s", 1, 0)) as jmlsakit')
     ->where('status_approved', 1)
-    ->where('tgl_izin', $hariini)
+    ->where('tgl_izin_dari', $hariini)
     ->first();
         return view('dashboard.dashboardadmin', compact('rekappresensi', 'rekapizin'));
     }
