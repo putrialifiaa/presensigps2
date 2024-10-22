@@ -9,6 +9,7 @@ use App\Http\Controllers\KonfigurasiController;
 use App\Http\Controllers\CabangController;
 use App\Http\Controllers\IzinabsenController;
 use App\Http\Controllers\IzinsakitController;
+use App\Http\Controllers\CutiController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['guest:karyawan'])->group(function () {
@@ -116,5 +117,7 @@ Route::middleware(['auth:user'])->group(function () {
     Route::post('konfigurasi/jamkerjadept/{kode_jk_dept}/update', [KonfigurasiController::class, 'updatejamkerjadept']);
     Route::get('konfigurasi/jamkerjadept/{kode_jk_dept}/delete', [KonfigurasiController::class, 'deletejamkerjadept']);
 
+    //Cuti
+    Route::get('/cuti', [CutiController::class, 'index']);
 
 });
