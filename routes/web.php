@@ -119,5 +119,6 @@ Route::middleware(['auth:user'])->group(function () {
 
     //Cuti
     Route::get('/cuti', [CutiController::class, 'index']);
+    Route::post('/cuti/store', [CutiController::class, 'store']);
 
 });

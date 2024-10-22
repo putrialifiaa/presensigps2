@@ -42,7 +42,7 @@
 
                             <div class="row">
                                 <div class="col-12">
-                                    <a href="#" class="btn btn-primary" id="btnTambahDepartemen">
+                                    <a href="#" class="btn btn-primary" id="btnTambahcuti">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                             viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                                             stroke-linecap="round" stroke-linejoin="round"
@@ -246,3 +246,95 @@
         </div>
     </div>
 @endsection
+
+@push('myscript')
+    <script>
+        $(function() {
+            $("#btnTambahcuti").click(function() {
+                $("#modal-inputcuti").modal("show");
+            });
+
+            $(".edit").click(function() {
+                var kode_dept = $(this).attr(
+                    'kode_dept');
+                $.ajax({
+                    type: 'POST',
+                    url: '/departemen/edit',
+                    cache: false,
+                    data: {
+                        _token: "{{ csrf_token() }}",
+                        kode_dept: kode_dept
+                    },
+                    success: function(respond) {
+                        $("#loadeditform").html(respond);
+                        $("#modal-editdepartemen").modal("show");
+                    },
+                });
+            });
+
+            $(".delete-confirm").click(function(e) {
+                var form = $(this).closest('form');
+                e.preventDefault();
+                Swal.fire({
+                    title: "Apakah Anda Yakin Menghapus Data Ini?",
+                    text: "Data Akan Dihapus Permanen",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: "Delete!",
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form.submit();
+                        Swal.fire('Deleted!', 'Data Berhasil Dihapus', 'success')
+                    }
+                });
+            });
+
+            // Validasi form sebelum submit
+            $("#frmCuti").submit(function(e) {
+                var kode_cuti = $("#kode_cuti").val();
+                var nama_cuti = $("#nama_cuti").val();
+                var jml_hari = $("#jml_hari").val();
+
+                if (kode_cuti == "") {
+                    Swal.fire({
+                        title: 'Warning!',
+                        text: 'Kode Cuti Harus Diisi',
+                        icon: 'warning',
+                        confirmButtonText: 'Ok'
+                    }).then(() => {
+                        $("#kode_cuti").focus();
+                    });
+
+                    e.preventDefault(); // Mencegah form dikirim jika ada kesalahan
+                    return false;
+                } else if (nama_cuti == "") {
+                    Swal.fire({
+                        title: 'Warning!',
+                        text: 'Nama Cuti Harus Diisi',
+                        icon: 'warning',
+                        confirmButtonText: 'Ok'
+                    }).then(() => {
+                        $("#nama_cuti").focus();
+                    });
+
+                    e.preventDefault();
+                    return false;
+                } else if (jml_hari == "" || jml_hari == 0) {
+                    Swal.fire({
+                        title: 'Warning!',
+                        text: 'Jumlah Hari Harus Diisi',
+                        icon: 'warning',
+                        confirmButtonText: 'Ok'
+                    }).then(() => {
+                        $("#jml_hari").focus();
+                    });
+
+                    e.preventDefault();
+                    return false;
+                }
+            });
+        });
+    </script>
+@endpush
