@@ -8,6 +8,7 @@ use App\Http\Controllers\DepartemenController;
 use App\Http\Controllers\KonfigurasiController;
 use App\Http\Controllers\CabangController;
 use App\Http\Controllers\IzinabsenController;
+use App\Http\Controllers\IzinsakitController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['guest:karyawan'])->group(function () {
@@ -50,6 +51,10 @@ Route::middleware('auth:karyawan')->group(function () {
     //Izin Absen
     Route::get('/izinabsen', [IzinabsenController::class, 'create']);
     Route::post('/izinabsen/store', [IzinabsenController::class, 'store']);
+
+    //Izin Sakit
+    Route::get('/izinsakit', [IzinsakitController::class, 'create']);
+    Route::post('/izinsakit/store', [IzinsakitController::class, 'store']);
 
 });
 
