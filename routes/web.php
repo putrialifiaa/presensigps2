@@ -120,5 +120,8 @@ Route::middleware(['auth:user'])->group(function () {
     //Cuti
     Route::get('/cuti', [CutiController::class, 'index']);
     Route::post('/cuti/store', [CutiController::class, 'store']);
+    Route::post('/cuti/edit', [CutiController::class, 'edit']);
+    Route::post('/cuti/{kode_cuti}/update', [CutiController::class, 'update']);
+    Route::delete('/cuti/{kode_cuti}/delete', [CutiController::class, 'delete']);
 
 });

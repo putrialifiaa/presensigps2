@@ -255,19 +255,19 @@
             });
 
             $(".edit").click(function() {
-                var kode_dept = $(this).attr(
-                    'kode_dept');
+                var kode_cuti = $(this).attr(
+                    'kode_cuti');
                 $.ajax({
                     type: 'POST',
-                    url: '/departemen/edit',
+                    url: '/cuti/edit',
                     cache: false,
                     data: {
                         _token: "{{ csrf_token() }}",
-                        kode_dept: kode_dept
+                        kode_cuti: kode_cuti
                     },
                     success: function(respond) {
                         $("#loadeditform").html(respond);
-                        $("#modal-editdepartemen").modal("show");
+                        $("#modal-editcuti").modal("show");
                     },
                 });
             });
