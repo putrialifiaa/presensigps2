@@ -10,6 +10,7 @@ use App\Http\Controllers\CabangController;
 use App\Http\Controllers\IzinabsenController;
 use App\Http\Controllers\IzinsakitController;
 use App\Http\Controllers\CutiController;
+use App\Http\Controllers\IzincutiController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['guest:karyawan'])->group(function () {
@@ -56,6 +57,10 @@ Route::middleware('auth:karyawan')->group(function () {
     //Izin Sakit
     Route::get('/izinsakit', [IzinsakitController::class, 'create']);
     Route::post('/izinsakit/store', [IzinsakitController::class, 'store']);
+
+    //Izin Cuti
+    Route::get('/izincuti', [IzincutiController::class, 'create']);
+    Route::post('/izincuti/store', [IzincutiController::class, 'store']);
 
 });
 
