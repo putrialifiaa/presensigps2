@@ -53,6 +53,8 @@ Route::middleware('auth:karyawan')->group(function () {
     //Izin Absen
     Route::get('/izinabsen', [IzinabsenController::class, 'create']);
     Route::post('/izinabsen/store', [IzinabsenController::class, 'store']);
+    Route::get('/izinabsen/{kode_izin}/edit', [IzinabsenController::class, 'edit']);
+    Route::post('/izinabsen/{kode_izin}/update', [IzinabsenController::class, 'update']);
 
     //Izin Sakit
     Route::get('/izinsakit', [IzinsakitController::class, 'create']);
@@ -62,6 +64,7 @@ Route::middleware('auth:karyawan')->group(function () {
     Route::get('/izincuti', [IzincutiController::class, 'create']);
     Route::post('/izincuti/store', [IzincutiController::class, 'store']);
 
+    Route::get('izin/{kode_izin}/showact', [PresensiController::class, 'showact']);
 });
 
 // Rute untuk Admin

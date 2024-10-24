@@ -46,7 +46,8 @@
                         $status = 'Not Found';
                     }
                 @endphp
-                <div class="card" style="margin-bottom: 10px; padding: 10px;">
+                <div class="card card_izin" kode_izin="{{ $d->kode_izin }}" style="margin-bottom: 10px; padding: 10px;"
+                    data-toggle="modal" data-target="#actionSheetIconed">
                     <div class="card-body" style="padding: 5px;">
                         <div class="historicontent" style="display: flex; align-items: center;">
                             <div class="iconpresensi" style="flex-shrink: 0;">
@@ -57,7 +58,7 @@
                                     <ion-icon name="medkit-outline"
                                         style="font-size: 30px; color:rgb(187, 27, 67)"></ion-icon>
                                 @elseif ($d->status == 'c')
-                                    <ion-icon name="calendar-outline" style="font-size: 30px; color:#ffbb00"></ion-icon>
+                                    <ion-icon name="calendar-outline" style="font-size: 30px; color:#cea908"></ion-icon>
                                 @endif
                             </div>
                             <div class="datapresensi" style="line-height: 1.2; margin-left: 10px;">
@@ -94,28 +95,28 @@
                 </div>
 
                 <!--
-                                                                                                                                                                                                                    <ul class="listview image-listview">
-                                                                                                                                                                                                                        <li>
-                                                                                                                                                                                                                            <div class="item">
-                                                                                                                                                                                                                                <div class="in">
-                                                                                                                                                                                                                                    <div>
-                                                                                                                                                                                                                                        <b>{{ date('d-m-Y', strtotime($d->tgl_izin_dari)) }}
-                                                                                                                                                                                                                                            ({{ $d->status == 's' ? 'Sakit' : 'Izin' }})
+                                                                                                                                                                                                                                                <ul class="listview image-listview">
+                                                                                                                                                                                                                                                    <li>
+                                                                                                                                                                                                                                                        <div class="item">
+                                                                                                                                                                                                                                                            <div class="in">
+                                                                                                                                                                                                                                                                <div>
+                                                                                                                                                                                                                                                                    <b>{{ date('d-m-Y', strtotime($d->tgl_izin_dari)) }}
+                                                                                                                                                                                                                                                                        ({{ $d->status == 's' ? 'Sakit' : 'Izin' }})
     </b><br>
-                                                                                                                                                                                                                                        <small class="text-muted">{{ $d->keterangan }}</small>
-                                                                                                                                                                                                                                    </div>
-                                                                                                                                                                                                                                    @if ($d->status_approved == 0)
+                                                                                                                                                                                                                                                                    <small class="text-muted">{{ $d->keterangan }}</small>
+                                                                                                                                                                                                                                                                </div>
+                                                                                                                                                                                                                                                                @if ($d->status_approved == 0)
     <span class="badge bg-warning">Waiting</span>
 @elseif ($d->status_approved == 1)
     <span class="badge bg-success">Approved</span>
 @elseif ($d->status_approved == 2)
     <span class="badge bg-danger">Dismissed</span>
     @endif
-                                                                                                                                                                                                                                </div>
-                                                                                                                                                                                                                            </div>
-                                                                                                                                                                                                                        </li>
-                                                                                                                                                                                                                    </ul>
-                                                                                                                                                                                                                -->
+                                                                                                                                                                                                                                                            </div>
+                                                                                                                                                                                                                                                        </div>
+                                                                                                                                                                                                                                                    </li>
+                                                                                                                                                                                                                                                </ul>
+                                                                                                                                                                                                                                            -->
             @endforeach
         </div>
     </div>
@@ -146,4 +147,28 @@
             </a>
         </div>
     </div>
+
+    <div class="modal fade action-sheet" id="actionSheetIconed" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"></h5>
+                </div>
+                <div class="modal-body" id="showact">
+
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
+
+@push('myscript')
+    <script>
+        $(function() {
+            $(".card_izin").click(function(e) {
+                var kode_izin = $(this).attr("kode_izin");
+                $("#showact").load('/izin/' + kode_izin + '/showact');
+            });
+        });
+    </script>
+@endpush

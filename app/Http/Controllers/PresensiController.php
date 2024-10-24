@@ -601,4 +601,10 @@ class PresensiController extends Controller
         $cek = DB::table('pengajuan_izin')->where('nik', $nik)->where('tgl_izin_dari', $tgl_izin_dari)->count();
         return $cek;
     }
+
+    public function showact($kode_izin){
+        $dataizin = DB::table('pengajuan_izin')->where('kode_izin',$kode_izin)->first();
+
+        return view('presensi.showact', compact('dataizin'));
     }
+}

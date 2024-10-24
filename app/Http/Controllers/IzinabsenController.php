@@ -50,4 +50,31 @@ class IzinabsenController extends Controller
             return redirect('/presensi/izin')->with(key: ['error'=>'Data Gagal Disimpan']);
         }
     }
+
+    public function edit($kode_izin){
+        $dataizin = DB::table('pengajuan_izin')->where('kode_izin', $kode_izin)->first();
+        return view('izin.edit',compact('dataizin'));
+    }
+
+    public function update($kode_izin, Request $request){
+        $tgl_izin_dari = $request->tgl_izin_dari;
+        $tgl_izin_sampai = $request->tgl_izin_sampai;
+        $keterangan = $request->keterangan;
+
+        try {
+            //code...
+            $data = [
+                'tgl_izin_dari' => $tgl_izin_dari,
+                'tgl_izin_sampai' => $tgl_izin_sampai,
+                'keterangan' => $keterangan
+            ];
+
+            DB::table('pengajuan_izin')->where('kode_izin',$kode_izin)->update($data);
+            return redirect('/presensi/izin')->with(['success'=>'Data Berhasil Diupdate']);
+
+        } catch (\Exception $e) {
+            return redirect('/presensi/izin')->with(key: ['error'=>'Data Gagal Diupdate']);
+
+        }
+    }
 }
