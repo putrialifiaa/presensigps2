@@ -17,7 +17,7 @@
                 <ion-icon name="chevron-back-outline"></ion-icon>
             </a>
         </div>
-        <div class="pageTitle">Edit Formulir Izin</div>
+        <div class="pageTitle">Edit Formulir Sakit</div>
         <div class="right"></div>
     </div>
     <!--- App Header --->
@@ -26,7 +26,8 @@
 @section('content')
     <div class="row" style="margin-top:70px">
         <div class="col">
-            <form method="POST" action="/izinabsen/{{ $dataizin->kode_izin }}/update" id="frmizin">
+            <form method="POST" action="/izinsakit/{{ $dataizin->kode_izin }}/update" id="frmizin"
+                enctype="multipart/form-data">
                 @csrf
                 <div class="form-group">
                     <input type="text" id="tgl_izin_dari" value="{{ $dataizin->tgl_izin_dari }}" autocomplete="off"
@@ -39,6 +40,28 @@
                 <div class="form-group">
                     <input type="text" readonly id="jml_hari" name="jml_hari" class="form-control" autocomplete="off"
                         placeholder="Jumlah Hari">
+                </div>
+                @if ($dataizin->doc_sid != null)
+                    <div class="ror">
+                        <div class="col-12">
+                            @php
+                                $docsid = Storage::url('uploads/sid/' . $dataizin->doc_sid);
+                            @endphp
+                            <img src="{{ url($docsid) }}" alt="" width="120px">
+                        </div>
+                    </div>
+                @endif
+                <div class="custom-file-upload" id="fileUpload1" style="height: 100px !important">
+                    <input type="file" name="sid" id="fileuploadInput" accept=".png, .jpg, .jpeg">
+                    <label for="fileuploadInput">
+                        <span>
+                            <strong>
+                                <ion-icon name="cloud-upload-outline" role="img" class="md hydrated"
+                                    aria-label="cloud upload outline"></ion-icon>
+                                <i>Upload Surat Dokter</i>
+                            </strong>
+                        </span>
+                    </label>
                 </div>
                 <div class="form-group">
                     <textarea name="keterangan" id="keterangan" cols="30" rows="5" class="form-control" placeholder="Keterangan">{{ $dataizin->keterangan }}</textarea>

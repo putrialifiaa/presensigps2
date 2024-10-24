@@ -58,7 +58,7 @@
                                     <ion-icon name="medkit-outline"
                                         style="font-size: 30px; color:rgb(187, 27, 67)"></ion-icon>
                                 @elseif ($d->status == 'c')
-                                    <ion-icon name="calendar-outline" style="font-size: 30px; color:#cea908"></ion-icon>
+                                    <ion-icon name="calendar-outline" style="font-size: 30px; color:#c96d03"></ion-icon>
                                 @endif
                             </div>
                             <div class="datapresensi" style="line-height: 1.2; margin-left: 10px;">
@@ -95,28 +95,28 @@
                 </div>
 
                 <!--
-                                                                                                                                                                                                                                                <ul class="listview image-listview">
-                                                                                                                                                                                                                                                    <li>
-                                                                                                                                                                                                                                                        <div class="item">
-                                                                                                                                                                                                                                                            <div class="in">
-                                                                                                                                                                                                                                                                <div>
-                                                                                                                                                                                                                                                                    <b>{{ date('d-m-Y', strtotime($d->tgl_izin_dari)) }}
-                                                                                                                                                                                                                                                                        ({{ $d->status == 's' ? 'Sakit' : 'Izin' }})
+                                                                                                                                                                                                                                                    <ul class="listview image-listview">
+                                                                                                                                                                                                                                                        <li>
+                                                                                                                                                                                                                                                            <div class="item">
+                                                                                                                                                                                                                                                                <div class="in">
+                                                                                                                                                                                                                                                                    <div>
+                                                                                                                                                                                                                                                                        <b>{{ date('d-m-Y', strtotime($d->tgl_izin_dari)) }}
+                                                                                                                                                                                                                                                                            ({{ $d->status == 's' ? 'Sakit' : 'Izin' }})
     </b><br>
-                                                                                                                                                                                                                                                                    <small class="text-muted">{{ $d->keterangan }}</small>
-                                                                                                                                                                                                                                                                </div>
-                                                                                                                                                                                                                                                                @if ($d->status_approved == 0)
+                                                                                                                                                                                                                                                                        <small class="text-muted">{{ $d->keterangan }}</small>
+                                                                                                                                                                                                                                                                    </div>
+                                                                                                                                                                                                                                                                    @if ($d->status_approved == 0)
     <span class="badge bg-warning">Waiting</span>
 @elseif ($d->status_approved == 1)
     <span class="badge bg-success">Approved</span>
 @elseif ($d->status_approved == 2)
     <span class="badge bg-danger">Dismissed</span>
     @endif
+                                                                                                                                                                                                                                                                </div>
                                                                                                                                                                                                                                                             </div>
-                                                                                                                                                                                                                                                        </div>
-                                                                                                                                                                                                                                                    </li>
-                                                                                                                                                                                                                                                </ul>
-                                                                                                                                                                                                                                            -->
+                                                                                                                                                                                                                                                        </li>
+                                                                                                                                                                                                                                                    </ul>
+                                                                                                                                                                                                                                                -->
             @endforeach
         </div>
     </div>

@@ -60,4 +60,41 @@ class IzinsakitController extends Controller
             return redirect('/presensi/izin')->with(key: ['error'=>'Data Gagal Disimpan']);
         }
     }
+
+    public function edit($kode_izin){
+        $dataizin = DB::table('pengajuan_izin')->where('kode_izin', $kode_izin)->first();
+        return view('sakit.edit', compact('dataizin'));
+    }
+
+    public function update($kode_izin, Request $request){
+        $tgl_izin_dari = $request->tgl_izin_dari;
+        $tgl_izin_sampai = $request->tgl_izin_sampai;
+        $keterangan = $request->keterangan;
+
+        if ($request->hasFile('sid')) {
+            $sid = $kode_izin . "." . $request->file('sid')->getClientOriginalExtension();
+        } else {
+            $sid = null;
+        }
+        $data = [
+            'tgl_izin_dari' => $tgl_izin_dari,
+            'tgl_izin_sampai' => $tgl_izin_sampai,
+            'keterangan' => $keterangan,
+            'doc_sid' => $sid
+        ];
+
+        try {
+            DB::table('pengajuan_izin')
+            ->where('kode_izin', $kode_izin)
+            ->update($data);
+            if ($request->hasFile('sid')) {
+                $sid = $kode_izin . "." . $request->file('sid')->getClientOriginalExtension();
+                $folderPath = "public/uploads/sid/";
+                $request->file('sid')->storeAs($folderPath, $sid);
+              }
+              return redirect('/presensi/izin')->with(['success'=>'Data Berhasil Diupdate']);
+        } catch (\Exception $e) {
+            return redirect('/presensi/izin')->with(key: ['error'=>'Data Gagal Diupdate']);
+        }
+    }
 }
