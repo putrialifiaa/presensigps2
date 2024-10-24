@@ -26,7 +26,7 @@
     </li>
     <li>
         <a href="#" id="deletebutton" class="btn btn-list text-danger" data-dismiss="modal" data-toggle="modal"
-            data-target="#DialogBasic">
+            data-target="#deleteConfirm">
             <span>
                 <ion-icon name="trash-outline"></ion-icon>
                 Delete
@@ -34,3 +34,11 @@
         </a>
     </li>
 </ul>
+
+<script>
+    $(function() {
+        $("#deletebutton").click(function(e) {
+            $("#hapuspengajuan").attr('href', '/izin/' + '{{ $dataizin->kode_izin }}/delete');
+        });
+    });
+</script>

@@ -348,6 +348,7 @@ class PresensiController extends Controller
         $nik = Auth::guard('karyawan')->user()->nik;
         $dataizin = DB::table('pengajuan_izin')
         ->leftJoin('master_cuti','pengajuan_izin.kode_cuti', '=', 'master_cuti.kode_cuti')
+        ->orderBy('tgl_izin_dari', 'desc')
         ->where('nik', $nik)->get();
         return view('presensi.izin', compact('dataizin'));
     }
@@ -604,7 +605,22 @@ class PresensiController extends Controller
 
     public function showact($kode_izin){
         $dataizin = DB::table('pengajuan_izin')->where('kode_izin',$kode_izin)->first();
-
         return view('presensi.showact', compact('dataizin'));
+    }
+
+    public function deleteizin($kode_izin){
+        $cekdataizin = DB::table('pengajuan_izin')->where('kode_izin', $kode_izin)->first();
+        $doc_sid = $cekdataizin->doc_sid;
+
+        try {
+            DB::table('pengajuan_izin')->where('kode_izin', $kode_izin)->delete();
+            if ($doc_sid != null){
+
+                Storage::delete('/public/uploads/sid/'.$doc_sid);
+            }
+            return redirect('/presensi/izin')->with(['success' => 'Data Berhasil Dihapus']);
+        } catch (\Exception $e) {
+            return redirect('/presensi/izin')->with(['error' => 'Data Berhasil Dihapus']);
+        }
     }
 }

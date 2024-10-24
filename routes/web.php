@@ -69,6 +69,7 @@ Route::middleware('auth:karyawan')->group(function () {
     Route::post('/izincuti/{kode_izin}/update', [IzincutiController::class, 'update']);
 
     Route::get('izin/{kode_izin}/showact', [PresensiController::class, 'showact']);
+    Route::get('izin/{kode_izin}/delete', [PresensiController::class, 'deleteizin']);
 });
 
 // Rute untuk Admin
