@@ -65,6 +65,8 @@ Route::middleware('auth:karyawan')->group(function () {
     //Izin Cuti
     Route::get('/izincuti', [IzincutiController::class, 'create']);
     Route::post('/izincuti/store', [IzincutiController::class, 'store']);
+    Route::get('/izincuti/{kode_izin}/edit', [IzincutiController::class, 'edit']);
+    Route::post('/izincuti/{kode_izin}/update', [IzincutiController::class, 'update']);
 
     Route::get('izin/{kode_izin}/showact', [PresensiController::class, 'showact']);
 });
