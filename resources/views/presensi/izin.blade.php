@@ -34,6 +34,47 @@
     </div>
     <div class="row">
         <div class="col">
+            <form method="GET" action="/presensi/izin">
+                <div class="row">
+                    <div class="col-7 pr-0">
+                        <div class="form-group">
+                            <select name="bulan" id="bulan" class="form-control" selectmaterialize>
+                                <option value="">Bulan</option>
+                                @for ($i = 1; $i <= 12; $i++)
+                                    <option {{ Request('bulan') == $i ? 'selected' : '' }} value="{{ $i }}">
+                                        {{ $namabulan[$i] }}</option>
+                                @endfor
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-5 pl-1">
+                        <div class="form-group">
+                            <select name="tahun" id="tahun" class="form-control">
+                                <option value="">Tahun</option>
+                                @php
+                                    $tahun_awal = 2022;
+                                    $tahun_sekarang = date('Y');
+                                @endphp
+                                @for ($t = $tahun_awal; $t <= $tahun_sekarang; $t++)
+                                    <option value="{{ $t }}" {{ Request('tahun') == $t ? 'selected' : '' }}>
+                                        {{ $t }}</option>
+                                @endfor
+                            </select>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <button class="btn btn-primary mt-0 mb-2">Cari Data</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col">
             @foreach ($dataizin as $d)
                 @php
                     if ($d->status == 'i') {
@@ -95,28 +136,28 @@
                 </div>
 
                 <!--
-                                                                                                                                                                                                                                                        <ul class="listview image-listview">
-                                                                                                                                                                                                                                                            <li>
-                                                                                                                                                                                                                                                                <div class="item">
-                                                                                                                                                                                                                                                                    <div class="in">
-                                                                                                                                                                                                                                                                        <div>
-                                                                                                                                                                                                                                                                            <b>{{ date('d-m-Y', strtotime($d->tgl_izin_dari)) }}
-                                                                                                                                                                                                                                                                                ({{ $d->status == 's' ? 'Sakit' : 'Izin' }})
+                                                                                                                                                                                                                                                                                                                                                                    <ul class="listview image-listview">
+                                                                                                                                                                                                                                                                                                                                                                        <li>
+                                                                                                                                                                                                                                                                                                                                                                            <div class="item">
+                                                                                                                                                                                                                                                                                                                                                                                <div class="in">
+                                                                                                                                                                                                                                                                                                                                                                                    <div>
+                                                                                                                                                                                                                                                                                                                                                                                        <b>{{ date('d-m-Y', strtotime($d->tgl_izin_dari)) }}
+                                                                                                                                                                                                                                                                                                                                                                                            ({{ $d->status == 's' ? 'Sakit' : 'Izin' }})
     </b><br>
-                                                                                                                                                                                                                                                                            <small class="text-muted">{{ $d->keterangan }}</small>
-                                                                                                                                                                                                                                                                        </div>
-                                                                                                                                                                                                                                                                        @if ($d->status_approved == 0)
+                                                                                                                                                                                                                                                                                                                                                                                        <small class="text-muted">{{ $d->keterangan }}</small>
+                                                                                                                                                                                                                                                                                                                                                                                    </div>
+                                                                                                                                                                                                                                                                                                                                                                                    @if ($d->status_approved == 0)
     <span class="badge bg-warning">Waiting</span>
 @elseif ($d->status_approved == 1)
     <span class="badge bg-success">Approved</span>
 @elseif ($d->status_approved == 2)
     <span class="badge bg-danger">Dismissed</span>
     @endif
-                                                                                                                                                                                                                                                                    </div>
-                                                                                                                                                                                                                                                                </div>
-                                                                                                                                                                                                                                                            </li>
-                                                                                                                                                                                                                                                        </ul>
-                                                                                                                                                                                                                                                    -->
+                                                                                                                                                                                                                                                                                                                                                                                </div>
+                                                                                                                                                                                                                                                                                                                                                                            </div>
+                                                                                                                                                                                                                                                                                                                                                                        </li>
+                                                                                                                                                                                                                                                                                                                                                                    </ul>
+                                                                                                                                                                                                                                                                                                                                                                -->
             @endforeach
         </div>
     </div>
