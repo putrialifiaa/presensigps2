@@ -200,7 +200,8 @@ class PresensiController extends Controller
                         'jam_in' => $jam,
                         'foto_in' => $fileName,
                         'lokasi_in' => $lokasi,
-                        'kode_jam_kerja' => $jamkerja->kode_jam_kerja
+                        'kode_jam_kerja' => $jamkerja->kode_jam_kerja,
+                        'status' => 'h'
                     ];
                     $simpan = DB::table('presensi')->insert($data_masuk);
 
@@ -558,7 +559,7 @@ class PresensiController extends Controller
     public function izinsakit(Request $request){
 
         $query = Pengajuanizin::query();
-        $query->select('id', 'tgl_izin_dari', 'pengajuan_izin.nik', 'nama_lengkap', 'jabatan', 'status', 'status_approved', 'keterangan');
+        $query->select('kode_izin', 'tgl_izin_dari', 'tgl_izin_sampai', 'pengajuan_izin.nik', 'nama_lengkap', 'jabatan', 'status', 'status_approved', 'keterangan');
         $query->join('karyawan', 'pengajuan_izin.nik', '=', 'karyawan.nik');
         if(!empty($request->dari) && !empty($request->sampai)){
             $query->whereBetween('tgl_izin_dari', [$request->dari, $request->sampai]);
@@ -577,28 +578,67 @@ class PresensiController extends Controller
         }
 
         $query->orderBy('tgl_izin_dari', 'desc');
-        $izinsakit = $query->paginate(2);
+        $izinsakit = $query->paginate(10);
         $izinsakit->appends($request->all());
         return view('presensi.izinsakit', compact('izinsakit'));
     }
 
     public function approveizinsakit(Request $request){
         $status_approved = $request->status_approved;
-        $id_izinsakit_form = $request->id_izinsakit_form; // Perbaikan disini
-        $update = DB::table('pengajuan_izin')
-                    ->where('id', $id_izinsakit_form)
-                    ->update([
-                        'status_approved' => $status_approved
+        $kode_izin = $request->kode_izin_form; // Perbaikan disini
+        $dataizin = DB::table('pengajuan_izin')->where('kode_izin', $kode_izin)->first();
+        $nik = $dataizin->nik;
+        $tgl_dari = $dataizin->tgl_izin_dari;
+        $tgl_sampai = $dataizin->tgl_izin_sampai;
+        $status = $dataizin->status;
+        DB::beginTransaction();
+        try {
+            if($status_approved == 1) {
+                while(strtotime($tgl_dari) <= strtotime($tgl_sampai)){
+                    DB::table('presensi')->insert([
+                        'nik' => $nik,
+                        'tgl_presensi' => $tgl_dari,
+                        'status' => $status,
+                        'kode_izin' => $kode_izin
                     ]);
+                    $tgl_dari = date("Y-m-d",strtotime("+1 days",strtotime($tgl_dari)));
+                }
+            }
 
-        if($update){
-            return Redirect::back()->with(['success'=>'Data Berhasil Diupdate']);
-        } else {
-            return Redirect::back()->with(['warning'=>'Data Gagal Diupdate']);
+            DB::table('pengajuan_izin')->where('kode_izin', $kode_izin)->update(['status_approved' => $status_approved]);
+            DB::commit();
+            return Redirect::back()->with(['success' => 'Data Berhasil Diproses']);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return Redirect::back()->with(['warning' => 'Data Gagal Diproses']);
         }
+        //$update = DB::table('pengajuan_izin')
+        //            ->where('id', $kode_izin)
+        //            ->update([
+        //               'status_approved' => $status_approved
+        //            ]);
+        //
+        //if($update){
+        //    return Redirect::back()->with(['success'=>'Data Berhasil Diupdate']);
+        //} else {
+        //    return Redirect::back()->with(['warning'=>'Data Gagal Diupdate']);
+        //}
     }
 
-    public function batalkanizinsakit($id){
+    public function batalkanizinsakit($kode_izin){
+
+        DB::beginTransaction();
+        try {
+            DB::table('pengajuan_izin')->where('kode_izin', $kode_izin)->update([
+                'status_approved' => 0
+            ]);
+            DB::table('presensi')->where('kode_izin', $kode_izin)->delete();
+            DB::commit();
+            return Redirect::back()->with(['success' => 'Data Berhasil Dibatalkan']);
+        } catch (\Exception $e) {
+            return Redirect::back()->with(['warning' => 'Data Gagal Dibatalkan']);
+        }
+
         $update = DB::table('pengajuan_izin')->where('id', $id)->update([
                         'status_approved' => 0
                     ]);
