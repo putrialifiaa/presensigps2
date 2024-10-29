@@ -45,7 +45,7 @@
             border: 1px solid #000000;
             padding: 4px;
             /* Kurangi padding */
-            background-color: #a4c2b2;
+            background-color: #c9c9c9;
             font-size: 10px;
         }
 
@@ -114,48 +114,38 @@
             <tr>
                 <th rowspan="2">NIK</th>
                 <th rowspan="2">Nama Karyawan</th>
-                <th colspan="31">Tanggal</th>
+                <th colspan="{{ $jmlhari }}">Bulan {{ $namabulan[$bulan] }} {{ $tahun }}</th>
                 <th rowspan="2">TH</th>
                 <th rowspan="2">TT</th>
             </tr>
             <tr>
-                <?php for ($i = 1; $i <= 31; $i++) { ?>
-                <th>{{ $i }}</th>
-                <?php } ?>
+                @foreach ($rangetanggal as $d)
+                    @if ($d != null)
+                        <th>{{ date('d', strtotime($d)) }}</th>
+                    @endif
+                @endforeach
+
             </tr>
-            @foreach ($rekap as $d)
+            @foreach ($rekap as $r)
                 <tr>
-                    <td>{{ $d->nik }}</td>
-                    <td>{{ $d->nama_lengkap }}</td>
+                    <td>{{ $r->nik }}</td>
+                    <td>{{ $r->nama_lengkap }}</td>
 
                     <?php
-                    $totalhadir = 0;
-                    $totalterlambat = 0;
-                    for ($i = 1; $i <= 31; $i++) {
-                        $tgl = "tgl_" . $i;
-                        if (empty($d->$tgl)) {
-                            $hadir = ['', ''];
-                            $totalhadir += 0;
-                        } else {
-                            $hadir = explode("-", $d->$tgl);
-                            $totalhadir += 1;
-                            if ($hadir[0] > $d->jam_masuk) {
-                                $totalterlambat +=1;
-                            }
-                        }
-                    ?>
+                        for ($i = 1; $i <= $jmlhari - 1; $i++) {
+                            $tgl = 'tgl_' . $i;
+                            $datapresensi = explode("|",$r->$tgl);
+                        ?>
                     <td>
-                        <span
-                            style="color:{{ $hadir[0] > $d->jam_masuk ? 'red' : '' }}">{{ !empty($hadir[1]) ? $hadir[0] : '-' }}</span><br>
-                        <span
-                            style="color:{{ $hadir[1] < $d->jam_pulang ? 'red' : '' }}">{{ !empty($hadir[1]) ? $hadir[1] : '-' }}</span>
-                    </td>
+                        @if ($r->$tgl != null)
+                            {{ $datapresensi[2] }}
+                        @endif
 
+                    </td>
                     <?php
-                    }
-                    ?>
-                    <td>{{ $totalhadir }}</td>
-                    <td>{{ $totalterlambat }}</td>
+                       }
+                        ?>
+                    </td>
                 </tr>
             @endforeach
         </table>
@@ -163,18 +153,8 @@
         <table width="100%" style="margin-top: 50px; margin-bottom: 50px;">
             <tr>
                 <td></td>
-                <td style="text-align: center; padding-right: 30px; padding-bottom: 50px;">Gresik,
+                <td style="text-align: right; padding-right: 30px; padding-bottom: 50px; padding-left: 20px;">Gresik,
                     {{ date('d-m-Y') }}</td>
-            </tr>
-            <tr>
-                <td style="text-align: center; vertical-align: bottom; padding-top: 80px;">
-                    <u>Nama HRD</u><br>
-                    <b>HRD Manager</b>
-                </td>
-                <td style="text-align: center; vertical-align: bottom; padding-top: 80px;">
-                    <u>Nama Direktur</u><br>
-                    <b>Direktur</b>
-                </td>
             </tr>
         </table>
 
