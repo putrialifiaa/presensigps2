@@ -115,8 +115,12 @@
                 <th rowspan="2">NIK</th>
                 <th rowspan="2">Nama Karyawan</th>
                 <th colspan="{{ $jmlhari }}">Bulan {{ $namabulan[$bulan] }} {{ $tahun }}</th>
-                <th rowspan="2">TH</th>
-                <th rowspan="2">TT</th>
+                <th rowspan="2">H</th>
+                <th rowspan="2">I</th>
+                <th rowspan="2">S</th>
+                <th rowspan="2">C</th>
+                <th rowspan="2">A</th>
+
             </tr>
             <tr>
                 @foreach ($rangetanggal as $d)
@@ -124,7 +128,6 @@
                         <th>{{ date('d', strtotime($d)) }}</th>
                     @endif
                 @endforeach
-
             </tr>
             @foreach ($rekap as $r)
                 <tr>
@@ -132,23 +135,57 @@
                     <td>{{ $r->nama_lengkap }}</td>
 
                     <?php
-                        for ($i = 1; $i <= $jmlhari - 1; $i++) {
+                        $jml_hadir = 0;
+                        $jml_izin = 0;
+                        $jml_sakit = 0;
+                        $jml_cuti = 0;
+                        $jml_alpha = 0;
+                        $color = "";
+                        for ($i = 1; $i <= $jmlhari; $i++) {
                             $tgl = 'tgl_' . $i;
                             $datapresensi = explode("|",$r->$tgl);
-                        ?>
-                    <td>
-                        @if ($r->$tgl != null)
-                            {{ $datapresensi[2] }}
-                        @endif
+                            if($r->$tgl != NULL){
+                                $status = $datapresensi[2];
+                            } else {
+                                $status = "";
+                            }
 
-                    </td>
-                    <?php
-                       }
+                            // Menghitung jumlah status
+                            if($status == "h"){
+                                $jml_hadir += 1;
+                                $color = "#FFFFFF";
+                            } elseif($status == "i"){
+                                $jml_izin += 1;
+                                $color = "#FFED48";
+                            } elseif($status == "s"){
+                                $jml_sakit += 1;
+                                $color = "#FBB143";
+                            } elseif($status == "c"){
+                                $jml_cuti += 1;
+                                $color = "#C7F9B3";
+                            } elseif(empty($status) == "a"){
+                                $jml_alpha += 1;
+                                $color = "#F31A07";
+                            }
                         ?>
+                    <td style="background-color: {{ $color }}">
+                        @if ($r->$tgl != null)
+                            {{ $status }}
+                        @endif
                     </td>
+                    <?php } ?>
+
+                    <!-- Total -->
+                    <td>{{ !empty($jml_hadir) ? $jml_hadir : '' }}</td>
+                    <td>{{ !empty($jml_izin) ? $jml_izin : '' }}</td>
+                    <td>{{ !empty($jml_sakit) ? $jml_sakit : '' }}</td>
+                    <td>{{ !empty($jml_cuti) ? $jml_cuti : '' }}</td>
+                    <td>{{ !empty($jml_alpha) ? $jml_alpha : '' }}</td>
+
                 </tr>
             @endforeach
         </table>
+
 
         <table width="100%" style="margin-top: 50px; margin-bottom: 50px;">
             <tr>

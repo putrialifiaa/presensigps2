@@ -24,8 +24,11 @@ class DashboardController extends Controller
 
     // Query untuk histori bulan ini
     $historibulanini = DB::table('presensi')
+        ->select('presensi.*', 'keterangan', 'jam_kerja.*', 'doc_sid', 'nama_cuti')
         ->leftJoin('jam_kerja', 'presensi.kode_jam_kerja', '=', 'jam_kerja.kode_jam_kerja')
-        ->where('nik', $nik)
+        ->leftJoin('pengajuan_izin', 'presensi.kode_izin', '=', 'pengajuan_izin.kode_izin')
+        ->leftJoin('master_cuti', 'pengajuan_izin.kode_cuti', '=', 'master_cuti.kode_cuti')
+         ->where('presensi.nik', $nik)
         ->whereRaw('MONTH(tgl_presensi) = ?', [$bulanini])
         ->whereRaw('YEAR(tgl_presensi) = ?', [$tahunini])
         ->orderBy('tgl_presensi')
