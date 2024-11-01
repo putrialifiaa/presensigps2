@@ -106,7 +106,6 @@ class KaryawanController extends Controller
         $jabatan = $request->jabatan;
         $no_hp = $request->no_hp;
         $kode_dept = $request->kode_dept;
-        $password = Hash::make('12345');
         $kode_cabang = $request->kode_cabang;
         $old_foto = $request->old_foto;
 
@@ -130,7 +129,6 @@ class KaryawanController extends Controller
             $karyawan->no_hp = $no_hp;
             $karyawan->kode_dept = $kode_dept;
             $karyawan->foto = $foto;
-            $karyawan->password = $password;
             $karyawan->kode_cabang = $kode_cabang;
 
             // Simpan data ke database

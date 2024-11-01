@@ -19,12 +19,12 @@
         }
 
         h3 {
-            font-family: 'Times New Roman', Times, serif font-size: 14px;
+            font-family: 'Times New Roman', Times, serif font-size: 12px;
             font-weight: 600;
         }
 
         .thin-font {
-            font-size: 14px;
+            font-size: 12px;
             font-weight: 300;
         }
 
@@ -45,13 +45,13 @@
         .tabelpresensi tr th {
             border: 1px solid #000000;
             padding: 8px;
-            background-color: #a4c2b2
+            background-color: #c9c9c9;
         }
 
         .tabelpresensi tr td {
             border: 1px solid #000000;
             padding: 8px;
-            font-size: 14px;
+            font-size: 12px;
         }
 
         .foto {
@@ -150,46 +150,66 @@
                 <th>Foto</th>
                 <th>Jam Pulang</th>
                 <th>Foto</th>
+                <th>Status</th>
                 <th>Keterangan</th>
                 <th>Jumlah Jam Kerja</th>
             </tr>
             @foreach ($presensi as $d)
-                @php
-                    $path_in = Storage::url('uploads/absensi/' . $d->foto_in);
-                    $path_out = Storage::url('uploads/absensi/' . $d->foto_out);
-                    $jamterlambat = selisih($d->jam_masuk, $d->jam_in);
-                @endphp
+                @if ($d->status == 'h')
+                    @php
+                        $path_in = Storage::url('uploads/absensi/' . $d->foto_in);
+                        $path_out = Storage::url('uploads/absensi/' . $d->foto_out);
+                        $jamterlambat = selisih($d->jam_masuk, $d->jam_in);
+                    @endphp
+
+                    <tr>
+                        <td>{{ $loop->iteration }}</td>
+                        <td>{{ date('d-m-Y', strtotime($d->tgl_presensi)) }}</td>
+                        <td>{{ $d->jam_in }}</td>
+                        <td><img src="{{ url($path_in) }}" alt="" class="foto"></td>
+                        <td>{{ $d->jam_out != null ? $d->jam_out : 'Belum Absen' }}</td>
+                        <td>
+                            @if ($d->jam_out != null)
+                                <img src="{{ url($path_out) }}" alt="" class="foto">
+                            @else
+                                <img src="{{ asset('assets/img/camera.png') }}" alt="" class="foto">
+                        </td>
+                @endif
+                </td>
+                <td style="text-align: center">{{ $d->status }}</td>
+                <td>
+                    @if ($d->jam_in > $d->jam_masuk)
+                        Terlambat {{ $jamterlambat }}
+                    @else
+                        Tepat Waktu
+                    @endif
+                </td>
+                <td>
+                    @if ($d->jam_out != null)
+                        @php
+                            $jmljamkerja = selisih($d->jam_in, $d->jam_out);
+                        @endphp
+                    @else
+                        @php
+                            $jmljamkerja = 0;
+                        @endphp
+                    @endif
+                    {{ $jmljamkerja }}
+                </td>
+                </tr>
+            @else
                 <tr>
                     <td>{{ $loop->iteration }}</td>
                     <td>{{ date('d-m-Y', strtotime($d->tgl_presensi)) }}</td>
-                    <td>{{ $d->jam_in }}</td>
-                    <td><img src="{{ url($path_in) }}" alt="" class="foto"></td>
-                    <td>{{ $d->jam_out != null ? $d->jam_out : 'Belum Absen' }}</td>
-                    <td>
-                        @if ($d->jam_out != null)
-                            <img src="{{ url($path_out) }}" alt="" class="foto">
-                    </td>
-                @else
-                    <img src="{{ asset('assets/img/camera.png') }}" alt="" class="foto"></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td style="text-align: center">{{ $d->status }}</td>
+                    <td>{{ $d->keterangan }}</td>
+                    <td></td>
+                </tr>
             @endif
-            <td>
-                @if ($d->jam_in > $d->jam_masuk)
-                    Terlambat {{ $jamterlambat }}
-                @else
-                    Tepat Waktu
-                @endif
-            </td>
-            <td>
-                @if ($d->jam_out != null)
-                    @php
-                        $jmljamkerja = selisih($d->jam_in, $d->jam_out);
-                    @endphp
-                    {{ $jmljamkerja }}
-                @else
-                    Belum Absen
-                @endif
-            </td>
-            </tr>
             @endforeach
         </table>
 
@@ -199,14 +219,7 @@
                     {{ date('d-m-Y') }}</td>
             </tr>
             <tr>
-                <td style="text-align: center; vertical-align: bottom; padding-top: 80px;">
-                    <u>Nama HRD</u><br>
-                    <b>HRD Manager</b>
-                </td>
-                <td style="text-align: center; vertical-align: bottom; padding-top: 80px;">
-                    <u>Nama Direktur</u><br>
-                    <b>Direktur</b>
-                </td>
+
             </tr>
         </table>
 

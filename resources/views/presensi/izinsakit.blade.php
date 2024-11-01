@@ -176,7 +176,15 @@
                                     <td>{{ $d->nik }}</td>
                                     <td>{{ $d->nama_lengkap }}</td>
                                     <td>{{ $d->jabatan }}</td>
-                                    <td>{{ $d->status == 'i' ? 'izin' : 'Sakit' }}</td>
+                                    <td>
+                                        @if ($d->status == 'i')
+                                            Izin
+                                        @elseif ($d->status == 's')
+                                            Sakit
+                                        @elseif ($d->status == 'c')
+                                            Cuti
+                                        @endif
+                                    </td>
                                     <td>{{ $d->keterangan }}</td>
                                     <td>
                                         @if ($d->status_approved == 1)
