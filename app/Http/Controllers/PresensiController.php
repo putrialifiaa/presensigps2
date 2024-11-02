@@ -92,6 +92,7 @@ class PresensiController extends Controller
 {
     $nik = Auth::guard('karyawan')->user()->nik;
     $kode_cabang = Auth::guard('karyawan')->user()->kode_cabang;
+    $kode_dept = Auth::guard('karyawan')->user()->kode_dept;
     $tgl_presensi = date("Y-m-d");
     $jam = date("H:i:s");
     $lok_kantor = DB::table('cabang')->where('kode_cabang', $kode_cabang)->first();
@@ -116,6 +117,15 @@ class PresensiController extends Controller
     $jamkerja = DB::table('konfigurasi_jamkerja')
         ->join('jam_kerja', 'konfigurasi_jamkerja.kode_jam_kerja', '=', 'jam_kerja.kode_jam_kerja')
         ->where('nik', $nik)->where('hari', $namahari)->first();
+
+        if($jamkerja == null) {
+            $jamkerja = DB::table('konfigurasi_jk_dept_detail')
+            ->join('konfigurasi_jk_dept','konfigurasi_jk_dept_detail.kode_jk_dept','=','konfigurasi_jk_dept.kode_jk_dept')
+            ->join('jam_kerja', 'konfigurasi_jk_dept_detail.kode_jam_kerja', '=', 'jam_kerja.kode_jam_kerja')
+            ->where('kode_dept', $kode_dept)
+            ->where('kode_cabang', $kode_cabang)
+            ->where('hari', $namahari)->first();
+        }
 
     $maxRadius = 10000; // Radius maksimal dalam meter
 
@@ -404,8 +414,9 @@ class PresensiController extends Controller
     public function getpresensi(Request $request){
         $tanggal = $request->tanggal;
         $presensi = DB::table('presensi')
-        ->select('presensi.*','nama_lengkap','karyawan.kode_dept', 'jam_masuk', 'nama_jam_kerja', 'jam_masuk', 'jam_pulang')
+        ->select('presensi.*','nama_lengkap','karyawan.kode_dept', 'jam_masuk', 'nama_jam_kerja', 'jam_masuk', 'jam_pulang', 'keterangan')
         ->leftJoin('jam_kerja', 'presensi.kode_jam_kerja', '=', 'jam_kerja.kode_jam_kerja')
+        ->leftJoin('pengajuan_izin', 'presensi.kode_izin', '=', 'pengajuan_izin.kode_izin')
         ->join('karyawan','presensi.nik','=','karyawan.nik')
         ->join('departemen','karyawan.kode_dept','=','departemen.kode_dept')
         ->where('tgl_presensi', $tanggal)
