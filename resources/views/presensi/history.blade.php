@@ -14,35 +14,31 @@
 @endsection
 
 @section('content')
-    <div class="row" style="margin-top:70px">
+    <div class="row">
         <div class="col">
-            <div class="row">
-                <div class="col-12">
+            <div class="row" style="margin-top:70px">
+                <div class="col-7 pr-0">
                     <div class="form-group">
                         <select name="bulan" id="bulan" class="form-control">
-                            <option value="">Pilih Bulan</option>
+                            <option value="">Bulan</option>
                             @for ($i = 1; $i <= 12; $i++)
-                                <option value="{{ $i }}" {{ date('m') == $i ? 'selected' : '' }}>
-                                    {{ $namabulan[$i] }}
-                                </option>
+                                <option {{ Request('bulan') == $i ? 'selected' : '' }} value="{{ $i }}">
+                                    {{ $namabulan[$i] }}</option>
                             @endfor
                         </select>
                     </div>
                 </div>
-            </div>
-            <div class="row">
-                <div class="col-12">
+                <div class="col-5 pl-1">
                     <div class="form-group">
                         <select name="tahun" id="tahun" class="form-control">
-                            <option value="">Pilih Tahun</option>
+                            <option value="">Tahun</option>
                             @php
-                                $tahunmulai = 2024;
-                                $tahunsekarang = date('Y');
+                                $tahun_awal = 2022;
+                                $tahun_sekarang = date('Y');
                             @endphp
-                            @for ($tahun = $tahunmulai; $tahun <= $tahunsekarang; $tahun++)
-                                <option value="{{ $tahun }}" {{ date('Y') == $tahun ? 'selected' : '' }}>
-                                    {{ $tahun }}
-                                </option>
+                            @for ($t = $tahun_awal; $t <= $tahun_sekarang; $t++)
+                                <option value="{{ $t }}" {{ Request('tahun') == $t ? 'selected' : '' }}>
+                                    {{ $t }}</option>
                             @endfor
                         </select>
                     </div>
@@ -50,14 +46,12 @@
             </div>
             <div class="row">
                 <div class="col-12">
-                    <div class="form-group">
-                        <button class="btn btn-primary btn-block" id="getdata">Search</button>
-                    </div>
+                    <button class="btn btn-primary mt-0 mb-2" id="getdata">Cari Data</button>
                 </div>
             </div>
         </div>
     </div>
-    <div class="row">
+    <div class="row" style="position:fixed; width:100%; margin:auto; overflow-y:scroll; height:430px">
         <div class="col" id="showhistory"></div>
     </div>
 @endsection
@@ -85,14 +79,10 @@
                     },
                     cache: false,
                     success: function(respond) {
+                        // Menampilkan data di elemen #showhistory
                         $("#showhistory").html(respond);
-                        // Tampilkan data yang dikembalikan oleh server
-                        alert("Data presensi: Bulan " + respond.bulan + " dan Tahun " + respond
-                            .tahun);
-                        console.log(respond);
                     },
                     error: function(xhr, status, error) {
-                        // Tampilkan pesan error jika ada kesalahan dalam AJAX
                         alert("Terjadi kesalahan: " + error);
                     }
                 });

@@ -210,38 +210,34 @@
                             Bulan Ini
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" data-toggle="tab" href="#profile" role="tab">
-                            Leaderboard
-                        </a>
-                    </li>
+
                 </ul>
             </div>
             <div class="tab-content mt-2" style="margin-bottom:100px;">
                 <div class="tab-pane fade show active" id="home" role="tabpanel">
                     <!-------
-                                                                                                                                                                                                                                                                    <ul class="listview image-listview">
-                                                                                                                                                                                                                                                                        @foreach ($historibulanini as $d)
+                                                                                                                                                                                                                                                                            <ul class="listview image-listview">
+                                                                                                                                                                                                                                                                                @foreach ($historibulanini as $d)
     @php
         $path = Storage::url('uploads/absensi/' . $d->foto_in);
     @endphp
-                                                                                                                                                                                                                                                                            <li>
-                                                                                                                                                                                                                                                                                <div class="item">
-                                                                                                                                                                                                                                                                                    <div class="icon-box bg-primary">
-                                                                                                                                                                                                                                                                                        <ion-icon name="image-outline" role="img" class="md hydrated"
-                                                                                                                                                                                                                                                                                            aria-label="image outline"></ion-icon>
-                                                                                                                                                                                                                                                                                    </div>
-                                                                                                                                                                                                                                                                                    <div class="in">
-                                                                                                                                                                                                                                                                                        <div>{{ date('d-m-y', strtotime($d->tgl_presensi)) }}</div>
-                                                                                                                                                                                                                                                                                        <span class="badge badge-success">{{ $d->jam_in }}</span>
-                                                                                                                                                                                                                                                                                        <span
-                                                                                                                                                                                                                                                                                            class="badge badge-danger">{{ $presensihariini !== null && $d->jam_out !== null ? $d->jam_out : 'Belum Absen' }}</span>
-                                                                                                                                                                                                                                                                                    </div>
-                                                                                                                                                                                                                                                                                </div>
-                                                                                                                                                                                                                                                                            </li>
+                                                                                                                                                                                                                                                                                    <li>
+                                                                                                                                                                                                                                                                                        <div class="item">
+                                                                                                                                                                                                                                                                                            <div class="icon-box bg-primary">
+                                                                                                                                                                                                                                                                                                <ion-icon name="image-outline" role="img" class="md hydrated"
+                                                                                                                                                                                                                                                                                                    aria-label="image outline"></ion-icon>
+                                                                                                                                                                                                                                                                                            </div>
+                                                                                                                                                                                                                                                                                            <div class="in">
+                                                                                                                                                                                                                                                                                                <div>{{ date('d-m-y', strtotime($d->tgl_presensi)) }}</div>
+                                                                                                                                                                                                                                                                                                <span class="badge badge-success">{{ $d->jam_in }}</span>
+                                                                                                                                                                                                                                                                                                <span
+                                                                                                                                                                                                                                                                                                    class="badge badge-danger">{{ $presensihariini !== null && $d->jam_out !== null ? $d->jam_out : 'Belum Absen' }}</span>
+                                                                                                                                                                                                                                                                                            </div>
+                                                                                                                                                                                                                                                                                        </div>
+                                                                                                                                                                                                                                                                                    </li>
     @endforeach
-                                                                                                                                                                                                                                                                    </ul>
-                                                                                                                                                                                                                                                                ga dihapus sp tau nnti dipake lgi------>
+                                                                                                                                                                                                                                                                            </ul>
+                                                                                                                                                                                                                                                                        ga dihapus sp tau nnti dipake lgi------>
                     <style>
                         .historicontent {
                             display: flex;
@@ -378,26 +374,6 @@
                             </div>
                         @endif
                     @endforeach
-                </div>
-                <div class="tab-pane fade" id="profile" role="tabpanel">
-                    <ul class="listview image-listview">
-                        @foreach ($leaderboard as $d)
-                            <li>
-                                <div class="item">
-                                    <img src="assets/img/sample/avatar/avatar1.jpg" alt="image" class="image">
-                                    <div class="in">
-                                        <div>
-                                            <b>{{ $d->nama_lengkap }}</b><br>
-                                            <small class="text-muted">{{ $d->jabatan }}</small>
-                                        </div>
-                                        <span class="badge {{ $d->jam_in < '07:30' ? 'bg-success' : 'bg-danger' }}">
-                                            {{ $d->jam_in }}
-                                        </span>
-                                    </div>
-                                </div>
-                            </li>
-                        @endforeach
-                    </ul>
                 </div>
             </div>
         </div>

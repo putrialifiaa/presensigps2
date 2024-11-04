@@ -328,31 +328,17 @@ class PresensiController extends Controller
     $tahun = $request->tahun;
     $nik = Auth::guard('karyawan')->user()->nik;
 
-    // Cek apakah bulan dan tahun diisi
-    if (empty($bulan) || empty($tahun)) {
-        return response()->json([
-            'status' => 'error',
-            'message' => 'Bulan dan Tahun harus diisi!'
-        ], 400);
-    }
-
-    // Query untuk mendapatkan data presensi berdasarkan bulan dan tahun
     $history = DB::table('presensi')
-        ->whereRaw('MONTH(tgl_presensi) = ?', [$bulan])
-        ->whereRaw('YEAR(tgl_presensi) = ?', [$tahun])
-        ->where('nik', $nik)
+        ->select('presensi.*', 'keterangan', 'jam_kerja.*', 'doc_sid', 'nama_cuti')
+        ->leftJoin('jam_kerja', 'presensi.kode_jam_kerja', '=', 'jam_kerja.kode_jam_kerja')
+        ->leftJoin('pengajuan_izin', 'presensi.kode_izin', '=', 'pengajuan_izin.kode_izin')
+        ->leftJoin('master_cuti', 'pengajuan_izin.kode_cuti', '=', 'master_cuti.kode_cuti')
+         ->where('presensi.nik', $nik)
+         ->whereRaw('MONTH(tgl_presensi) = "' . $bulan . '"')
+         ->whereRaw('YEAR(tgl_presensi) ="' . $tahun . '"')
         ->orderBy('tgl_presensi')
         ->get();
 
-    // Jika data presensi tidak ditemukan
-    if ($history->isEmpty()) {
-        return response()->json([
-            'status' => 'error',
-            'message' => 'Data presensi tidak ditemukan untuk bulan dan tahun yang dipilih.'
-        ], 404);
-    }
-
-    // Tampilkan view jika data ditemukan
     return view('presensi.gethistory', compact('history'));
 }
 
