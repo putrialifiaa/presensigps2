@@ -83,6 +83,7 @@ Route::middleware(['auth:user'])->group(function () {
     Route::post('/karyawan/edit', [KaryawanController::class, 'edit']);
     Route::post('/karyawan/{nik}/update', [KaryawanController::class, 'update']);
     Route::delete('/karyawan/{nik}/delete', [KaryawanController::class, 'delete'])->name('karyawan.delete');
+    Route::get('/karyawan/{nik}/resetpassword', [KaryawanController::class, 'resetpassword']);
 
     //Departemen
     Route::get('/departemen', [DepartemenController::class, 'index']);
