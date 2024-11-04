@@ -34,6 +34,23 @@ class izincutiController extends Controller
         $format = "IZ".$bulan.$thn;
         $kode_izin = buatkode($lastkodeizin,$format,3);
 
+        //Hitung Jumlah Hari Yang Diajukan
+        $jmlhari = hitunghari($tgl_izin_dari, $tgl_izin_sampai);
+
+        //Cek Jumlah Max Cuti
+        $cuti = DB::table('master_cuti')->where('kode_cuti', $kode_cuti)->first();
+
+        $jmlmaxcuti = $cuti->jml_hari;
+
+        //Cek Jumlah Cuti yang Sudah Digunakan
+        $cutidigunakan = DB::table('presensi')
+        ->whereRaw('YEAR(tgl_presensi)="'.$tahun.'"')
+        ->where('status','c')
+        ->where('nik',$nik)
+        ->count();
+
+        $sisacuti = $jmlmaxcuti - $cutidigunakan;
+
         //dd($kode_izin);
         $data = [
             'kode_izin' => $kode_izin,
@@ -45,6 +62,26 @@ class izincutiController extends Controller
             'keterangan' => $keterangan
         ];
 
+        $cekpresensi = DB::table('presensi')
+        ->whereBetween('tgl_presensi',[$tgl_izin_dari,$tgl_izin_sampai]);
+
+        $cekpengajuan = DB::table('pengajuan_izin')
+        ->whereRaw('"' . $tgl_izin_dari . '"BETWEEN tgl_izin_dari AND tgl_izin_sampai');
+
+        $datapresensi = $cekpresensi->get();
+
+        if($jmlhari > $sisacuti){
+            return redirect('/presensi/izin')->with(['error' => 'Jumlah Hari Melebihi Batas Maksimal. Sisa Cuti Anda ' . $sisacuti . 'Hari']);
+        }else if ($cekpresensi->count() > 0) {
+            $blacklistdate = "";
+            foreach($datapresensi as $d){
+                $blacklistdate .= date('d-m-Y',strtotime($d->tgl_presensi)) . ",";
+            }
+            return redirect('/presensi/izin')->with(['error' => 'Tanggal Tersebut Sudah Melakukan Absen']);
+        }else if($cekpengajuan->count() > 0){
+            return redirect('/presensi/izin')->with(['error' => 'Tanggal Tersebut Sudah Melakukan Pengajuan']);
+        } else {
+
         $simpan = DB::table('pengajuan_izin')->insert($data);
 
         if($simpan){
@@ -53,6 +90,7 @@ class izincutiController extends Controller
             return redirect('/presensi/izin')->with(key: ['error'=>'Data Gagal Disimpan']);
         }
     }
+}
 
     public function edit($kode_izin){
         $dataizin = DB::table('pengajuan_izin')->where('kode_izin', $kode_izin)->first();
