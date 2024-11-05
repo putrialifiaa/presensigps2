@@ -469,12 +469,15 @@ class PresensiController extends Controller
         $namabulan = [
             "", "Januari", "Februari", "Maret", "April", "Mei", "Juni",
             "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
-        return view('presensi.rekap', compact('namabulan'));
+        $cabang = DB::table('cabang')->get();
+
+            return view('presensi.rekap', compact('namabulan', 'cabang'));
     }
 
     public function cetakrekap(Request $request) {
         $bulan = $request->bulan;
         $tahun = $request->tahun;
+        $kode_cabang = $request->kode_cabang;
         $dari = $tahun . "-" . $bulan . "-01";
         $sampai = date("Y-m-t", strtotime ($dari));
         $namabulan = ["", "Januari", "Februari", "Maret", "April", "Mei", "Juni",
@@ -538,6 +541,9 @@ class PresensiController extends Controller
              }
         );
 
+        if(!empty($kode_cabang)){
+          $query->where('kode_cabang', $kode_cabang);
+         }
         $query->orderBy('nama_lengkap');
         $rekap = $query->get();
 
