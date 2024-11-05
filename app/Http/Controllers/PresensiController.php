@@ -138,8 +138,10 @@ class PresensiController extends Controller
         ], 400);
     }
 
-    $cek = DB::table('presensi')->where('tgl_presensi', $tgl_presensi)
-        ->where('nik', $nik)->count();
+    $presensi = DB::table('presensi')->where('tgl_presensi', $tgl_presensi)
+        ->where('nik', $nik);
+    $cek = $presensi->count();
+    $datapresensi = $presensi->first();
 
     $ket = ($cek > 0) ? "out" : "in";
 
@@ -162,8 +164,13 @@ class PresensiController extends Controller
                         'message' => 'Belum Jam Pulang',
                         'type' => 'out'
                     ], 500);
+                } else if(!empty($datapresensi->jam_out)) {
+                    return response()->json([
+                        'status' => 'error',
+                        'message' => 'Anda Sudah Melakukan Absen Pulang',
+                        'type' => 'out'
+                    ], 500);
                 } else {
-                // Jika sudah absen, update data jam_out
                 $data_pulang = [
                     'jam_out' => $jam,
                     'foto_out' => $fileName,

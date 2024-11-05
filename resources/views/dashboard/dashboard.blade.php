@@ -145,7 +145,7 @@
                             <div style="position: relative; display: inline-block; width: 40px; height: 40px;">
                                 <span class="badge bg-danger rounded-circle"
                                     style="position: absolute; top: -8px; right: -8px; width: 20px; height: 20px; display: flex;
-                                    justify-content: center; align-items: center; font-size: 0.7rem;">{{ $rekappresensi->jumlah_hadir }}
+                                    justify-content: center; align-items: center; font-size: 0.7rem;">{{ $rekappresensi->jmlhadir }}
                                 </span>
                                 <ion-icon name="man-outline" style="font-size: 1.8rem;" class="text-primary"></ion-icon>
                             </div>
@@ -160,8 +160,8 @@
                             <div style="position: relative; display: inline-block; width: 40px; height: 40px;">
                                 <span class="badge bg-danger rounded-circle"
                                     style="position: absolute; top: -8px; right: -8px; width: 20px; height: 20px; display: flex;
-                                    justify-content: center; align-items: center; font-size: 0.7rem;">{{ $rekapizin->jmlizin }}</span>
-                                <ion-icon name="clipboard-outline" style="font-size: 1.8rem;"
+                                    justify-content: center; align-items: center; font-size: 0.7rem;">{{ $rekappresensi->jmlizin }}</span>
+                                <ion-icon name="document-text-outline" style="font-size: 1.8rem;"
                                     class="text-success"></ion-icon>
                             </div>
                             <br><span
@@ -175,7 +175,7 @@
                             <div style="position: relative; display: inline-block; width: 40px; height: 40px;">
                                 <span class="badge bg-danger rounded-circle"
                                     style="position: absolute; top: -8px; right: -8px; width: 20px; height: 20px; display: flex;
-                                    justify-content: center; align-items: center; font-size: 0.7rem;">{{ $rekapizin->jmlsakit }}</span>
+                                    justify-content: center; align-items: center; font-size: 0.7rem;">{{ $rekappresensi->jmlsakit }}</span>
                                 <ion-icon name="medkit-outline" style="font-size: 1.8rem;"
                                     class="text-warning"></ion-icon>
                             </div>
@@ -190,12 +190,13 @@
                             <div style="position: relative; display: inline-block; width: 40px; height: 40px;">
                                 <span class="badge bg-danger rounded-circle"
                                     style="position: absolute; top: -8px; right: -8px; width: 20px; height: 20px; display: flex;
-                                    justify-content: center; align-items: center; font-size: 0.7rem;">{{ $rekappresensi->jumlah_terlambat }}
+                                    justify-content: center; align-items: center; font-size: 0.7rem;">{{ $rekappresensi->jmlcuti }}
                                 </span>
-                                <ion-icon name="alarm-outline" style="font-size: 1.8rem;" class="text-danger"></ion-icon>
+                                <ion-icon name="calendar-number-outline" style="font-size: 1.8rem;"
+                                    class="text-danger"></ion-icon>
                             </div>
                             <br><span
-                                style="font-size: 0.7rem; font-weight: 500; margin-top: -8px; display: block;">Terlambat</span>
+                                style="font-size: 0.7rem; font-weight: 500; margin-top: -8px; display: block;">Cuti</span>
                         </div>
                     </div>
                 </div>
@@ -216,28 +217,28 @@
             <div class="tab-content mt-2" style="margin-bottom:100px;">
                 <div class="tab-pane fade show active" id="home" role="tabpanel">
                     <!-------
-                                                                                                                                                                                                                                                                            <ul class="listview image-listview">
-                                                                                                                                                                                                                                                                                @foreach ($historibulanini as $d)
+                                                                                                                                                                                                                                                                                                <ul class="listview image-listview">
+                                                                                                                                                                                                                                                                                                    @foreach ($historibulanini as $d)
     @php
         $path = Storage::url('uploads/absensi/' . $d->foto_in);
     @endphp
-                                                                                                                                                                                                                                                                                    <li>
-                                                                                                                                                                                                                                                                                        <div class="item">
-                                                                                                                                                                                                                                                                                            <div class="icon-box bg-primary">
-                                                                                                                                                                                                                                                                                                <ion-icon name="image-outline" role="img" class="md hydrated"
-                                                                                                                                                                                                                                                                                                    aria-label="image outline"></ion-icon>
-                                                                                                                                                                                                                                                                                            </div>
-                                                                                                                                                                                                                                                                                            <div class="in">
-                                                                                                                                                                                                                                                                                                <div>{{ date('d-m-y', strtotime($d->tgl_presensi)) }}</div>
-                                                                                                                                                                                                                                                                                                <span class="badge badge-success">{{ $d->jam_in }}</span>
-                                                                                                                                                                                                                                                                                                <span
-                                                                                                                                                                                                                                                                                                    class="badge badge-danger">{{ $presensihariini !== null && $d->jam_out !== null ? $d->jam_out : 'Belum Absen' }}</span>
-                                                                                                                                                                                                                                                                                            </div>
-                                                                                                                                                                                                                                                                                        </div>
-                                                                                                                                                                                                                                                                                    </li>
+                                                                                                                                                                                                                                                                                                        <li>
+                                                                                                                                                                                                                                                                                                            <div class="item">
+                                                                                                                                                                                                                                                                                                                <div class="icon-box bg-primary">
+                                                                                                                                                                                                                                                                                                                    <ion-icon name="image-outline" role="img" class="md hydrated"
+                                                                                                                                                                                                                                                                                                                        aria-label="image outline"></ion-icon>
+                                                                                                                                                                                                                                                                                                                </div>
+                                                                                                                                                                                                                                                                                                                <div class="in">
+                                                                                                                                                                                                                                                                                                                    <div>{{ date('d-m-y', strtotime($d->tgl_presensi)) }}</div>
+                                                                                                                                                                                                                                                                                                                    <span class="badge badge-success">{{ $d->jam_in }}</span>
+                                                                                                                                                                                                                                                                                                                    <span
+                                                                                                                                                                                                                                                                                                                        class="badge badge-danger">{{ $presensihariini !== null && $d->jam_out !== null ? $d->jam_out : 'Belum Absen' }}</span>
+                                                                                                                                                                                                                                                                                                                </div>
+                                                                                                                                                                                                                                                                                                            </div>
+                                                                                                                                                                                                                                                                                                        </li>
     @endforeach
-                                                                                                                                                                                                                                                                            </ul>
-                                                                                                                                                                                                                                                                        ga dihapus sp tau nnti dipake lgi------>
+                                                                                                                                                                                                                                                                                                </ul>
+                                                                                                                                                                                                                                                                                            ga dihapus sp tau nnti dipake lgi------>
                     <style>
                         .historicontent {
                             display: flex;

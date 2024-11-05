@@ -9,7 +9,7 @@
                         Overview
                     </div>
                     <h2 class="page-title">
-                        Dashboard
+                        Rekap Presensi Hari Ini {{ date('d-m-Y', strtotime(date('d-m-Y'))) }}
                     </h2>
                 </div>
             </div>
@@ -17,6 +17,7 @@
     </div>
     <div class="page-body">
         <div class="container-xl">
+
             <div class="row">
                 <div class="col-md-6 col-xl-3">
                     <div class="card card-sm">
@@ -40,7 +41,7 @@
                                 </div>
                                 <div class="col">
                                     <div class="font-weight-medium">
-                                        {{ $rekappresensi->jumlah_hadir }}
+                                        {{ $rekappresensi->jmlhadir }}
                                     </div>
                                     <div class="text-secondary">
                                         Karyawan Hadir
@@ -74,7 +75,7 @@
                                 </div>
                                 <div class="col">
                                     <div class="font-weight-medium">
-                                        {{ $rekapizin->jmlizin }}
+                                        {{ $rekappresensi->jmlizin }}
                                     </div>
                                     <div class="text-secondary">
                                         Karyawan Izin
@@ -106,7 +107,7 @@
                                 </div>
                                 <div class="col">
                                     <div class="font-weight-medium">
-                                        {{ $rekapizin->jmlsakit }}
+                                        {{ $rekappresensi->jmlsakit }}
                                     </div>
                                     <div class="text-secondary">
                                         Karyawan Sakit
