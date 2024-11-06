@@ -11,7 +11,10 @@ use App\Http\Controllers\IzinabsenController;
 use App\Http\Controllers\IzinsakitController;
 use App\Http\Controllers\CutiController;
 use App\Http\Controllers\IzincutiController;
+use App\Models\User;
 use Illuminate\Support\Facades\Route;
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 
 Route::middleware(['guest:karyawan'])->group(function () {
     Route::get('/', function () {
@@ -73,12 +76,12 @@ Route::middleware('auth:karyawan')->group(function () {
 });
 
 // Rute untuk Admin
-Route::middleware(['auth:user'])->group(function () {
+Route::group(['middleware' => ['role:administrator,user']], function () {
     Route::get('/panel/dashboardadmin', [DashboardController::class, 'dashboardadmin']);
     Route::get('/proseslogoutadmin', [AuthController::class, 'proseslogoutadmin']);
 
     // Karyawan
-    Route::get('/karyawan', [KaryawanController::class, 'index']);
+    Route::get('/karyawan', [KaryawanController::class, 'index'])->middleware('permission:view-karyawan,user');
     Route::post('/karyawan/store', [KaryawanController::class, 'store']); // Tambah rute untuk metode POST
     Route::post('/karyawan/edit', [KaryawanController::class, 'edit']);
     Route::post('/karyawan/{nik}/update', [KaryawanController::class, 'update']);
@@ -86,7 +89,7 @@ Route::middleware(['auth:user'])->group(function () {
     Route::get('/karyawan/{nik}/resetpassword', [KaryawanController::class, 'resetpassword']);
 
     //Departemen
-    Route::get('/departemen', [DepartemenController::class, 'index']);
+    Route::get('/departemen', [DepartemenController::class, 'index'])->middleware('permission:view-departemen,user');
     Route::post('/departemen/store', [DepartemenController::class, 'store']);
     Route::post('/departemen/edit', [DepartemenController::class, 'edit']);
     Route::post('/departemen/{kode_dept}/update', [DepartemenController::class, 'update']);
@@ -137,5 +140,37 @@ Route::middleware(['auth:user'])->group(function () {
     Route::post('/cuti/edit', [CutiController::class, 'edit']);
     Route::post('/cuti/{kode_cuti}/update', [CutiController::class, 'update']);
     Route::delete('/cuti/{kode_cuti}/delete', [CutiController::class, 'delete']);
-
 });
+
+    Route::get('/createrolepermission', function () {
+        try {
+            Role::create(['name' => 'administrator']);
+            Permission::create(['name' => 'view-karyawan']);
+            Permission::create(['name' => 'view-departemen']);
+            echo "Sukses";
+        } catch (\Exception $e) {
+            echo "Error";
+        }
+});
+
+    Route::get('/give-user-role', function () {
+        try {
+            $user = User::findOrFail(1);
+            $user->assignRole('administrator');
+            echo "Sukses";
+        } catch (\Exception $e) {
+            //throw $th;
+            echo "Error";
+        }
+});
+
+    Route::get('/give-role-permission',function(){
+        try {
+            $role = Role::findOrFail(1);
+            $role->givePermissionTo('view-departemen');
+            echo "Sukses";
+        } catch (\Exception $e) {
+            //throw $th;
+            echo "Error";
+        }
+    });
