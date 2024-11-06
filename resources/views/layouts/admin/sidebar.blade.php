@@ -384,6 +384,10 @@
                                     href="/konfigurasi/jamkerjadept">
                                     Jam Kerja Departemen
                                 </a>
+                                <a class="dropdown-item {{ request()->is(['konfigurasi/users']) ? 'active' : '' }}"
+                                    href="/konfigurasi/users">
+                                    User's
+                                </a>
                             </div>
                         </div>
                     </div>

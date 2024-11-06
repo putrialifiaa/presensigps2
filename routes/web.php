@@ -11,6 +11,7 @@ use App\Http\Controllers\IzinabsenController;
 use App\Http\Controllers\IzinsakitController;
 use App\Http\Controllers\CutiController;
 use App\Http\Controllers\IzincutiController;
+use App\Http\Controllers\UserController;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
 use Spatie\Permission\Models\Permission;
@@ -133,6 +134,8 @@ Route::group(['middleware' => ['role:administrator,user']], function () {
     Route::get('/konfigurasi/jamkerjadept/{kode_jk_dept}/edit', [KonfigurasiController::class, 'editjamkerjadept']);
     Route::post('konfigurasi/jamkerjadept/{kode_jk_dept}/update', [KonfigurasiController::class, 'updatejamkerjadept']);
     Route::get('konfigurasi/jamkerjadept/{kode_jk_dept}/delete', [KonfigurasiController::class, 'deletejamkerjadept']);
+
+    Route::get('/konfigurasi/users', [UserController::class, 'index']);
 
     //Cuti
     Route::get('/cuti', [CutiController::class, 'index']);
