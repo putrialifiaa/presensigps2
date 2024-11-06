@@ -136,6 +136,7 @@ Route::group(['middleware' => ['role:administrator,user']], function () {
     Route::get('konfigurasi/jamkerjadept/{kode_jk_dept}/delete', [KonfigurasiController::class, 'deletejamkerjadept']);
 
     Route::get('/konfigurasi/users', [UserController::class, 'index']);
+    Route::post('/konfigurasi/users/store', [UserController::class, 'store']);
 
     //Cuti
     Route::get('/cuti', [CutiController::class, 'index']);
@@ -147,9 +148,9 @@ Route::group(['middleware' => ['role:administrator,user']], function () {
 
     Route::get('/createrolepermission', function () {
         try {
-            Role::create(['name' => 'administrator']);
-            Permission::create(['name' => 'view-karyawan']);
-            Permission::create(['name' => 'view-departemen']);
+            Role::create(['name' => 'admin cabang']);
+            //Permission::create(['name' => 'view-karyawan']);
+            //Permission::create(['name' => 'view-departemen']);
             echo "Sukses";
         } catch (\Exception $e) {
             echo "Error";
