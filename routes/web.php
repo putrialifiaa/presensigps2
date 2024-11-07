@@ -140,6 +140,7 @@ Route::group(['middleware' => ['role:administrator,user']], function () {
     Route::post('/konfigurasi/users/store', [UserController::class, 'store']);
     Route::post('/konfigurasi/users/edit', [UserController::class, 'edit']);
     Route::post('/konfigurasi/users/{id_user}/update', [UserController::class, 'update']);
+    Route::delete('/konfigurasi/users/{id_user}/delete', [UserController::class, 'delete']);
 
     //Cuti
     Route::get('/cuti', [CutiController::class, 'index']);

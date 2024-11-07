@@ -57,7 +57,7 @@
                             </div>
                             <div class="row mt-2">
                                 <div class="col-12">
-                                    <form action="/konfigurasi/users/store" method="GET">
+                                    <form action="{{ URL::current() }}" method="GET">
                                         <div class="row">
                                             <div class="col-10">
                                                 <div class="form-group">
@@ -122,11 +122,11 @@
                                                                     <path d="M16 5l3 3" />
                                                                 </svg>
                                                             </a>
-                                                            <form action="/user/{{ $d->id }}/delete" method="POST"
-                                                                style="margin-left:5px">
+                                                            <form action="/konfigurasi/users/{{ $d->id }}/delete"
+                                                                method="POST" style="margin-left:5px">
                                                                 @csrf
                                                                 @method('DELETE')
-                                                                <buton class="btn btn-danger btn-sm delete-confirm">
+                                                                <button class="btn btn-danger btn-sm delete-confirm">
                                                                     <svg xmlns="http://www.w3.org/2000/svg" width="24"
                                                                         height="24" viewBox="0 0 24 24" fill="none"
                                                                         stroke="currentColor" stroke-width="2"
@@ -142,7 +142,7 @@
                                                                         <path
                                                                             d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
                                                                     </svg>
-                                                                    </button>
+                                                                </button>
                                                             </form>
                                                         </div>
                                                     </td>
@@ -150,7 +150,7 @@
                                             @endforeach
                                         </tbody>
                                     </table>
-
+                                    {{ $users->links('vendor.pagination.bootstrap-5') }}
                                 </div>
                             </div>
                         </div>
@@ -380,6 +380,25 @@
 
                     return false;
                 }
+            });
+
+            $(".delete-confirm").click(function(e) {
+                var form = $(this).closest('form');
+                e.preventDefault();
+                Swal.fire({
+                    title: "Apakah Anda Yakin Menghapus Data Ini?",
+                    text: "Data Akan Dihapus Permanen",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: "Delete!",
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form.submit();
+                        Swal.fire('Deleted!', 'Data Berhasil Dihapus', 'success')
+                    }
+                });
             });
         });
     </script>

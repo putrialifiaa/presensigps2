@@ -10,15 +10,20 @@ use Illuminate\Support\Facades\Redirect;
 
 class UserController extends Controller
 {
-    public function index(){
+    public function index(Request $request){
         $cabang = DB::table('cabang')->orderBy('kode_cabang')->get();
         $role = DB::table('roles')->orderBy('id')->get();
-        $users = DB::table('users')
-        ->select('users.id','users.name','email','nama_cabang','roles.name as role')
-        ->join('cabang','users.kode_cabang','=','cabang.kode_cabang')
-        ->join('model_has_roles','users.id','=','model_has_roles.model_id')
-        ->join('roles','model_has_roles.role_id','=','roles.id')
-        ->get();
+        $query = User::query();
+        $query->select('users.id','users.name','email','nama_cabang','roles.name as role');
+        $query->join('cabang','users.kode_cabang','=','cabang.kode_cabang');
+        $query->join('model_has_roles','users.id','=','model_has_roles.model_id');
+        $query->join('roles','model_has_roles.role_id','=','roles.id');
+
+        if(!empty($request->name)) {
+            $query->where('users.name', 'like', '%' . $request->name . '%');
+        }
+        $users = $query->paginate(10);
+        $users->appends(request()->all());
 
         return view('users.index', compact('users','cabang', 'role'));
     }
@@ -99,6 +104,15 @@ class UserController extends Controller
                 return Redirect::back()->with(['success' => 'Data Berhasil Diupdate']);
         } catch (\Exception $e) {
             return Redirect::back()->with(['warning' => 'Data Gagal Diupdate']);
+        }
+    }
+
+    public function delete($id_user){
+        try {
+            DB::table('users')->where('id',$id_user)->delete();
+            return Redirect::back()->with(['success' => 'Data Berhasil Dihapus']);
+        } catch (\Exception $e) {
+            return Redirect::back()->with(['warning' => 'Data Gagal Dihapus']);
         }
     }
 }
