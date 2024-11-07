@@ -76,25 +76,19 @@ Route::middleware('auth:karyawan')->group(function () {
     Route::get('izin/{kode_izin}/delete', [PresensiController::class, 'deleteizin']);
 });
 
-// Rute untuk Admin
-Route::group(['middleware' => ['role:administrator,user']], function () {
-    Route::get('/panel/dashboardadmin', [DashboardController::class, 'dashboardadmin']);
+// Rute untuk Admin dan Admin Cabang
+Route::group(['middleware' => ['role:administrator|admin cabang,user']], function () {
     Route::get('/proseslogoutadmin', [AuthController::class, 'proseslogoutadmin']);
+    Route::get('/panel/dashboardadmin', [DashboardController::class, 'dashboardadmin']);
 
-    // Karyawan
-    Route::get('/karyawan', [KaryawanController::class, 'index'])->middleware('permission:view-karyawan,user');
-    Route::post('/karyawan/store', [KaryawanController::class, 'store']); // Tambah rute untuk metode POST
-    Route::post('/karyawan/edit', [KaryawanController::class, 'edit']);
-    Route::post('/karyawan/{nik}/update', [KaryawanController::class, 'update']);
-    Route::delete('/karyawan/{nik}/delete', [KaryawanController::class, 'delete'])->name('karyawan.delete');
+    //Karyawan
+    Route::get('/karyawan', [KaryawanController::class, 'index']);
     Route::get('/karyawan/{nik}/resetpassword', [KaryawanController::class, 'resetpassword']);
 
-    //Departemen
-    Route::get('/departemen', [DepartemenController::class, 'index'])->middleware('permission:view-departemen,user');
-    Route::post('/departemen/store', [DepartemenController::class, 'store']);
-    Route::post('/departemen/edit', [DepartemenController::class, 'edit']);
-    Route::post('/departemen/{kode_dept}/update', [DepartemenController::class, 'update']);
-    Route::delete('/departemen/{kode_dept}/delete', [DepartemenController::class, 'delete']);
+    //Konfigurasi Jam Kerja
+    Route::get('/konfigurasi/{nik}/setjamkerja', [KonfigurasiController::class, 'setjamkerja']);
+    Route::post('/konfigurasi/storesetjamkerja', [KonfigurasiController::class, 'storesetjamkerja']);
+    Route::post('/konfigurasi/updatesetjamkerja', [KonfigurasiController::class, 'updatesetjamkerja']);
 
     //Presensi
     Route::get('/presensi/monitoring', [PresensiController::class, 'monitoring']);
@@ -105,6 +99,26 @@ Route::group(['middleware' => ['role:administrator,user']], function () {
     Route::get('/presensi/rekap', [PresensiController::class, 'rekap']);
     Route::post('/presensi/cetakrekap', [PresensiController::class, 'cetakrekap']);
     Route::get('/presensi/izinsakit', [PresensiController::class, 'izinsakit']);
+
+});
+
+//Rute untuk Admin
+Route::group(['middleware' => ['role:administrator,user']], function () {
+
+    // Karyawan
+    Route::post('/karyawan/store', [KaryawanController::class, 'store']); // Tambah rute untuk metode POST
+    Route::post('/karyawan/edit', [KaryawanController::class, 'edit']);
+    Route::post('/karyawan/{nik}/update', [KaryawanController::class, 'update']);
+    Route::delete('/karyawan/{nik}/delete', [KaryawanController::class, 'delete'])->name('karyawan.delete');
+
+    //Departemen
+    Route::get('/departemen', [DepartemenController::class, 'index'])->middleware('permission:view-departemen,user');
+    Route::post('/departemen/store', [DepartemenController::class, 'store']);
+    Route::post('/departemen/edit', [DepartemenController::class, 'edit']);
+    Route::post('/departemen/{kode_dept}/update', [DepartemenController::class, 'update']);
+    Route::delete('/departemen/{kode_dept}/delete', [DepartemenController::class, 'delete']);
+
+    //Presensi
     Route::post('/presensi/approveizinsakit', [PresensiController::class, 'approveizinsakit']);
     Route::get('/presensi/{kode_izin}/batalkanizinsakit', [PresensiController::class, 'batalkanizinsakit']);
 
@@ -124,9 +138,7 @@ Route::group(['middleware' => ['role:administrator,user']], function () {
     Route::post('/konfigurasi/editjamkerja', [KonfigurasiController::class, 'editjamkerja']);
     Route::post('/konfigurasi/updatejamkerja', [KonfigurasiController::class, 'updatejamkerja']);
     Route::delete('/konfigurasi/{kode_jam_kerja}/delete', [KonfigurasiController::class, 'delete']);
-    Route::get('/konfigurasi/{nik}/setjamkerja', [KonfigurasiController::class, 'setjamkerja']);
-    Route::post('/konfigurasi/storesetjamkerja', [KonfigurasiController::class, 'storesetjamkerja']);
-    Route::post('/konfigurasi/updatesetjamkerja', [KonfigurasiController::class, 'updatesetjamkerja']);
+
 
     Route::get('/konfigurasi/jamkerjadept', [KonfigurasiController::class, 'jamkerjadept']);
     Route::get('/konfigurasi/jamkerjadept/create', [KonfigurasiController::class, 'createjamkerjadept']);

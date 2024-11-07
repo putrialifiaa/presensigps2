@@ -245,21 +245,25 @@
                         class="dropdown-menu {{ request()->is(['karyawan', 'departemen', 'cabang', 'cuti']) ? 'show' : '' }}">
                         <div class="dropdown-menu-columns">
                             <div class="dropdown-menu-column">
-                                <a class="dropdown-item {{ request()->is(['karyawan']) ? 'active' : '' }}"
-                                    href="/karyawan">
-                                    Karyawan
-                                </a>
-                                <a class="dropdown-item {{ request()->is(['departemen']) ? 'active' : '' }}"
-                                    href="/departemen">
-                                    Departemen
-                                </a>
-                                <a class="dropdown-item {{ request()->is(['cabang']) ? 'active' : '' }}"
-                                    href="/cabang">
-                                    Kantor Cabang
-                                </a>
-                                <a class="dropdown-item {{ request()->is(['cuti']) ? 'active' : '' }}" href="/cuti">
-                                    Cuti
-                                </a>
+                                @role('administrator|admin cabang', 'user')
+                                    <a class="dropdown-item {{ request()->is(['karyawan']) ? 'active' : '' }}"
+                                        href="/karyawan">
+                                        Karyawan
+                                    </a>
+                                @endrole
+                                @role('administrator', 'user')
+                                    <a class="dropdown-item {{ request()->is(['departemen']) ? 'active' : '' }}"
+                                        href="/departemen">
+                                        Departemen
+                                    </a>
+                                    <a class="dropdown-item {{ request()->is(['cabang']) ? 'active' : '' }}"
+                                        href="/cabang">
+                                        Kantor Cabang
+                                    </a>
+                                    <a class="dropdown-item {{ request()->is(['cuti']) ? 'active' : '' }}" href="/cuti">
+                                        Cuti
+                                    </a>
+                                @endrole
                             </div>
                         </div>
                     </div>
@@ -347,51 +351,53 @@
                         </div>
                     </div>
                 </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle {{ request()->is(['konfigurasi', 'konfigurasi/*']) ? 'show' : '' }}"
-                        href="#navbar-base" data-bs-toggle="dropdown" data-bs-auto-close="false" role="button"
-                        aria-expanded="{{ request()->is(['konfigurasi', 'konfigurasi/*']) ? 'true' : '' }}">
-                        <span
-                            class="nav-link-icon d-md-none d-lg-inline-block"><!-- Download SVG icon from http://tabler-icons.io/i/package -->
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                viewBox="0 0 24 24" fill="currentColor"
-                                class="icon icon-tabler icons-tabler-filled icon-tabler-settings">
-                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                                <path
-                                    d="M14.647 4.081a.724 .724 0 0 0 1.08 .448c2.439 -1.485 5.23 1.305 3.745 3.744a.724 .724 0 0 0 .447 1.08c2.775 .673 2.775 4.62 0 5.294a.724 .724 0 0 0 -.448 1.08c1.485 2.439 -1.305 5.23 -3.744 3.745a.724 .724 0 0 0 -1.08 .447c-.673 2.775 -4.62 2.775 -5.294 0a.724 .724 0 0 0 -1.08 -.448c-2.439 1.485 -5.23 -1.305 -3.745 -3.744a.724 .724 0 0 0 -.447 -1.08c-2.775 -.673 -2.775 -4.62 0 -5.294a.724 .724 0 0 0 .448 -1.08c-1.485 -2.439 1.305 -5.23 3.744 -3.745a.722 .722 0 0 0 1.08 -.447c.673 -2.775 4.62 -2.775 5.294 0zm-2.647 4.919a3 3 0 1 0 0 6a3 3 0 0 0 0 -6z" />
-                            </svg>
-                        </span>
-                        <span class="nav-link-title">
-                            Konfigurasi
-                        </span>
-                    </a>
-                    <div class="dropdown-menu {{ request()->is(['konfigurasi', 'konfigurasi/*']) ? 'show' : '' }}">
-                        <div class="dropdown-menu-columns">
-                            <div class="dropdown-menu-column">
-                                <a class="dropdown-item {{ request()->is(['konfigurasi/lokasikantor']) ? 'active' : '' }}"
-                                    href="/konfigurasi/lokasikantor">
-                                    Lokasi Kantor
-                                </a>
+                @role('administrator', 'user')
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle {{ request()->is(['konfigurasi', 'konfigurasi/*']) ? 'show' : '' }}"
+                            href="#navbar-base" data-bs-toggle="dropdown" data-bs-auto-close="false" role="button"
+                            aria-expanded="{{ request()->is(['konfigurasi', 'konfigurasi/*']) ? 'true' : '' }}">
+                            <span
+                                class="nav-link-icon d-md-none d-lg-inline-block"><!-- Download SVG icon from http://tabler-icons.io/i/package -->
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                    viewBox="0 0 24 24" fill="currentColor"
+                                    class="icon icon-tabler icons-tabler-filled icon-tabler-settings">
+                                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                    <path
+                                        d="M14.647 4.081a.724 .724 0 0 0 1.08 .448c2.439 -1.485 5.23 1.305 3.745 3.744a.724 .724 0 0 0 .447 1.08c2.775 .673 2.775 4.62 0 5.294a.724 .724 0 0 0 -.448 1.08c1.485 2.439 -1.305 5.23 -3.744 3.745a.724 .724 0 0 0 -1.08 .447c-.673 2.775 -4.62 2.775 -5.294 0a.724 .724 0 0 0 -1.08 -.448c-2.439 1.485 -5.23 -1.305 -3.745 -3.744a.724 .724 0 0 0 -.447 -1.08c-2.775 -.673 -2.775 -4.62 0 -5.294a.724 .724 0 0 0 .448 -1.08c-1.485 -2.439 1.305 -5.23 3.744 -3.745a.722 .722 0 0 0 1.08 -.447c.673 -2.775 4.62 -2.775 5.294 0zm-2.647 4.919a3 3 0 1 0 0 6a3 3 0 0 0 0 -6z" />
+                                </svg>
+                            </span>
+                            <span class="nav-link-title">
+                                Konfigurasi
+                            </span>
+                        </a>
+                        <div class="dropdown-menu {{ request()->is(['konfigurasi', 'konfigurasi/*']) ? 'show' : '' }}">
+                            <div class="dropdown-menu-columns">
+                                <div class="dropdown-menu-column">
+                                    <a class="dropdown-item {{ request()->is(['konfigurasi/lokasikantor']) ? 'active' : '' }}"
+                                        href="/konfigurasi/lokasikantor">
+                                        Lokasi Kantor
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="dropdown-menu-columns">
+                                <div class="dropdown-menu-column">
+                                    <a class="dropdown-item {{ request()->is(['konfigurasi/jamkerja']) ? 'active' : '' }}"
+                                        href="/konfigurasi/jamkerja">
+                                        Jam Kerja
+                                    </a>
+                                    <a class="dropdown-item {{ request()->is(['konfigurasi/jamkerjadept']) ? 'active' : '' }}"
+                                        href="/konfigurasi/jamkerjadept">
+                                        Jam Kerja Departemen
+                                    </a>
+                                    <a class="dropdown-item {{ request()->is(['konfigurasi/users']) ? 'active' : '' }}"
+                                        href="/konfigurasi/users">
+                                        User's
+                                    </a>
+                                </div>
                             </div>
                         </div>
-                        <div class="dropdown-menu-columns">
-                            <div class="dropdown-menu-column">
-                                <a class="dropdown-item {{ request()->is(['konfigurasi/jamkerja']) ? 'active' : '' }}"
-                                    href="/konfigurasi/jamkerja">
-                                    Jam Kerja
-                                </a>
-                                <a class="dropdown-item {{ request()->is(['konfigurasi/jamkerjadept']) ? 'active' : '' }}"
-                                    href="/konfigurasi/jamkerjadept">
-                                    Jam Kerja Departemen
-                                </a>
-                                <a class="dropdown-item {{ request()->is(['konfigurasi/users']) ? 'active' : '' }}"
-                                    href="/konfigurasi/users">
-                                    User's
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </li>
+                    </li>
+                @endrole
             </ul>
         </div>
     </div>
