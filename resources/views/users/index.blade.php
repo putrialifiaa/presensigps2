@@ -108,8 +108,7 @@
                                                     <td>{{ ucwords($d->role) }}</td>
                                                     <td>
                                                         <div class="btn-group">
-                                                            <a href="#" class="edit"
-                                                                kode_cabang="{{ $d->id }}">
+                                                            <a href="#" class="edit" id_user="{{ $d->id }}">
                                                                 <svg xmlns="http://www.w3.org/2000/svg" width="24"
                                                                     height="24" viewBox="0 0 24 24" fill="none"
                                                                     stroke="currentColor" stroke-width="2"
@@ -289,6 +288,20 @@
             </div>
         </div>
     </div>
+    <div class="modal modal-blur fade" id="modal-edituser" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Data User</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="loadedituser">
+
+                </div>
+
+            </div>
+        </div>
+    </div>
 @endsection
 
 @push('myscript')
@@ -296,6 +309,24 @@
         $(function() {
             $("#btnTambahUser").click(function() {
                 $("#modal-inputuser").modal("show");
+            });
+
+            $(".edit").click(function() {
+                var id_user = $(this).attr(
+                    'id_user');
+                $.ajax({
+                    type: 'POST',
+                    url: '/konfigurasi/users/edit',
+                    cache: false,
+                    data: {
+                        _token: "{{ csrf_token() }}",
+                        id_user: id_user
+                    },
+                    success: function(respond) {
+                        $("#loadedituser").html(respond);
+                    }
+                });
+                $("#modal-edituser").modal("show");
             });
 
             $("#frmUser").submit(function() {

@@ -135,8 +135,11 @@ Route::group(['middleware' => ['role:administrator,user']], function () {
     Route::post('konfigurasi/jamkerjadept/{kode_jk_dept}/update', [KonfigurasiController::class, 'updatejamkerjadept']);
     Route::get('konfigurasi/jamkerjadept/{kode_jk_dept}/delete', [KonfigurasiController::class, 'deletejamkerjadept']);
 
+    //User
     Route::get('/konfigurasi/users', [UserController::class, 'index']);
     Route::post('/konfigurasi/users/store', [UserController::class, 'store']);
+    Route::post('/konfigurasi/users/edit', [UserController::class, 'edit']);
+    Route::post('/konfigurasi/users/{id_user}/update', [UserController::class, 'update']);
 
     //Cuti
     Route::get('/cuti', [CutiController::class, 'index']);
