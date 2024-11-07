@@ -67,18 +67,20 @@
                                                         value="{{ Request('nama_karyawan') }}">
                                                 </div>
                                             </div>
-                                            <div class="col-4">
-                                                <div class="form-group">
-                                                    <select name="kode_dept" id="kode_dept" class="form-select">
-                                                        <option value="">Departemen</option>
-                                                        @foreach ($departemen as $d)
-                                                            <option
-                                                                {{ Request('kode_dept') == $d->kode_dept ? 'selected' : '' }}
-                                                                value="{{ $d->kode_dept }}">{{ $d->nama_dept }}</option>
-                                                        @endforeach
-                                                    </select>
+                                            @role('administrator', 'user')
+                                                <div class="col-4">
+                                                    <div class="form-group">
+                                                        <select name="kode_dept" id="kode_dept" class="form-select">
+                                                            <option value="">Departemen</option>
+                                                            @foreach ($departemen as $d)
+                                                                <option
+                                                                    {{ Request('kode_dept') == $d->kode_dept ? 'selected' : '' }}
+                                                                    value="{{ $d->kode_dept }}">{{ $d->nama_dept }}</option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
                                                 </div>
-                                            </div>
+                                            @endrole
                                             <div class="col-2">
                                                 <div class="form-group">
                                                     <button type="submit" class="btn btn-primary">

@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Karyawan;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
@@ -14,6 +16,9 @@ use Illuminate\Support\Facades\Storage;
 class KaryawanController extends Controller
 {
     public function index(Request $request) {
+        $kode_cabang = Auth::guard('user')->user()->kode_cabang;
+        $user = User::find(Auth::guard('user')->user()->id);
+
         $query = Karyawan::query();
         $query->select('karyawan.*', 'nama_dept');
         $query->join('departemen', 'karyawan.kode_dept', '=', 'departemen.kode_dept');
@@ -27,7 +32,11 @@ class KaryawanController extends Controller
             $query->where('karyawan.kode_dept', $request->kode_dept);
         }
 
+        if($user->hasRole('admin cabang')){
+            $query->where('karyawan.kode_cabang', $kode_cabang);
+        }
         $karyawan = $query->paginate(perPage: 10);
+
         $departemen = DB::table('departemen')->get();
         $cabang = DB::table('cabang')->orderBy('kode_cabang')->get();
         return view('karyawan.index', compact('karyawan', 'departemen', 'cabang'));

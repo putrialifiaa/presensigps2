@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 use App\Models\Pengajuanizin;
-
+use App\Models\User;
 
 class PresensiController extends Controller
 {
@@ -401,19 +401,38 @@ class PresensiController extends Controller
     }
 
     public function monitoring(){
+
+
         return view('presensi.monitoring');
     }
 
     public function getpresensi(Request $request){
+        $kode_cabang = Auth::guard('user')->user()->kode_cabang;
+        $user = User::find(Auth::guard('user')->user()->id);
+
         $tanggal = $request->tanggal;
-        $presensi = DB::table('presensi')
-        ->select('presensi.*','nama_lengkap','karyawan.kode_dept', 'jam_masuk', 'nama_jam_kerja', 'jam_masuk', 'jam_pulang', 'keterangan')
-        ->leftJoin('jam_kerja', 'presensi.kode_jam_kerja', '=', 'jam_kerja.kode_jam_kerja')
-        ->leftJoin('pengajuan_izin', 'presensi.kode_izin', '=', 'pengajuan_izin.kode_izin')
-        ->join('karyawan','presensi.nik','=','karyawan.nik')
-        ->join('departemen','karyawan.kode_dept','=','departemen.kode_dept')
-        ->where('tgl_presensi', $tanggal)
-        ->get();
+
+        if($user->hasRole('admin cabang')){
+            $presensi = DB::table('presensi')
+            ->select('presensi.*','nama_lengkap','karyawan.kode_dept', 'jam_masuk', 'nama_jam_kerja', 'jam_masuk', 'jam_pulang', 'keterangan')
+            ->leftJoin('jam_kerja', 'presensi.kode_jam_kerja', '=', 'jam_kerja.kode_jam_kerja')
+            ->leftJoin('pengajuan_izin', 'presensi.kode_izin', '=', 'pengajuan_izin.kode_izin')
+            ->join('karyawan','presensi.nik','=','karyawan.nik')
+            ->join('departemen','karyawan.kode_dept','=','departemen.kode_dept')
+            ->where('tgl_presensi', $tanggal)
+            ->where('karyawan.kode_cabang',$kode_cabang)
+            ->get();
+        } else if ($user->hasRole('administrator')) {
+            $presensi = DB::table('presensi')
+            ->select('presensi.*','nama_lengkap','karyawan.kode_dept', 'jam_masuk', 'nama_jam_kerja', 'jam_masuk', 'jam_pulang', 'keterangan')
+            ->leftJoin('jam_kerja', 'presensi.kode_jam_kerja', '=', 'jam_kerja.kode_jam_kerja')
+            ->leftJoin('pengajuan_izin', 'presensi.kode_izin', '=', 'pengajuan_izin.kode_izin')
+            ->join('karyawan','presensi.nik','=','karyawan.nik')
+            ->join('departemen','karyawan.kode_dept','=','departemen.kode_dept')
+            ->where('tgl_presensi', $tanggal)
+            ->get();
+        }
+
 
         return view('presensi.getpresensi', compact('presensi'));
     }
@@ -427,10 +446,21 @@ class PresensiController extends Controller
     }
 
     public function laporan(){
+        $kode_cabang = Auth::guard('user')->user()->kode_cabang;
+        $user = User::find(Auth::guard('user')->user()->id);
+
         $namabulan = [
             "", "Januari", "Februari", "Maret", "April", "Mei", "Juni",
             "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
-        $karyawan = DB::table('karyawan')->orderBy('nama_lengkap')->get();
+
+        if($user->hasRole('admin cabang')){
+          $karyawan = DB::table('karyawan')
+          ->where('kode_cabang', $kode_cabang)
+          ->orderBy('nama_lengkap')->get();
+        } else if($user->hasRole('administrator')){
+            $karyawan = DB::table('karyawan')->orderBy('nama_lengkap')->get();
+        }
+
         return view('presensi.laporan', compact('namabulan', 'karyawan'));
     }
 
@@ -558,6 +588,8 @@ class PresensiController extends Controller
         }
 
     public function izinsakit(Request $request){
+        $kode_cabang = Auth::guard('user')->user()->kode_cabang;
+        $user = User::find(Auth::guard('user')->user()->id);
 
         $query = Pengajuanizin::query();
         $query->select('kode_izin', 'tgl_izin_dari', 'tgl_izin_sampai', 'pengajuan_izin.nik', 'nama_lengkap', 'jabatan', 'status', 'status_approved', 'keterangan');
@@ -576,6 +608,10 @@ class PresensiController extends Controller
 
         if($request->status_approved === '0' || $request->status_approved === '1' || $request->status_approved === '2') {
             $query->where('status_approved', $request->status_approved);
+        }
+
+        if($user->hasRole('admin_cabang')){
+            $query->where('karyawan.kode_cabang', $kode_cabang);
         }
 
         $query->orderBy('tgl_izin_dari', 'desc');
