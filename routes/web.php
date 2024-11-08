@@ -71,6 +71,7 @@ Route::middleware('auth:karyawan')->group(function () {
     Route::post('/izincuti/store', [IzincutiController::class, 'store']);
     Route::get('/izincuti/{kode_izin}/edit', [IzincutiController::class, 'edit']);
     Route::post('/izincuti/{kode_izin}/update', [IzincutiController::class, 'update']);
+    Route::post('/izincuti/getmaxcuti', [IzincutiController::class, 'getmaxcuti']);
 
     Route::get('izin/{kode_izin}/showact', [PresensiController::class, 'showact']);
     Route::get('izin/{kode_izin}/delete', [PresensiController::class, 'deleteizin']);
@@ -99,6 +100,8 @@ Route::group(['middleware' => ['role:administrator|admin cabang,user']], functio
     Route::get('/presensi/rekap', [PresensiController::class, 'rekap']);
     Route::post('/presensi/cetakrekap', [PresensiController::class, 'cetakrekap']);
     Route::get('/presensi/izinsakit', [PresensiController::class, 'izinsakit']);
+    Route::post('/presensi/approveizinsakit', [PresensiController::class, 'approveizinsakit']);
+    Route::get('/presensi/{kode_izin}/batalkanizinsakit', [PresensiController::class, 'batalkanizinsakit']);
 
 });
 
@@ -119,8 +122,6 @@ Route::group(['middleware' => ['role:administrator,user']], function () {
     Route::delete('/departemen/{kode_dept}/delete', [DepartemenController::class, 'delete']);
 
     //Presensi
-    Route::post('/presensi/approveizinsakit', [PresensiController::class, 'approveizinsakit']);
-    Route::get('/presensi/{kode_izin}/batalkanizinsakit', [PresensiController::class, 'batalkanizinsakit']);
 
     //Cabang
     Route::get('/cabang', [CabangController::class, 'index']);

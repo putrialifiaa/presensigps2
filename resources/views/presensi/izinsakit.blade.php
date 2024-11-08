@@ -163,9 +163,8 @@
                                 <th>Status</th>
                                 <th>Keterangan</th>
                                 <th>Status Approved</th>
-                                @role('administrator', 'user')
-                                    <th>Aksi</th>
-                                @endrole
+                                <th>Aksi</th>
+
                             </tr>
                         </thead>
                         <tbody>
@@ -197,41 +196,41 @@
                                             <span class="badge bg-warning text-white">Pending</span>
                                         @endif
                                     </td>
-                                    @role('administrator', 'user')
-                                        <td>
-                                            @if ($d->status_approved == 0)
-                                                <a href="#" class="btn btn-sm btn-primary approve"
-                                                    kode_izin="{{ $d->kode_izin }}">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                                        viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                                        class="icon icon-tabler icons-tabler-outline icon-tabler-external-link">
-                                                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                                                        <path
-                                                            d="M12 6h-6a2 2 0 0 0 -2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-6" />
-                                                        <path d="M11 13l9 -9" />
-                                                        <path d="M15 4h5v5" />
-                                                    </svg>
 
-                                                </a>
-                                            @else
-                                                <a href="/presensi/{{ $d->kode_izin }}/batalkanizinsakit"
-                                                    class="btn btn-sm bg-danger">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                                        viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                                        class="icon icon-tabler icons-tabler-outline icon-tabler-square-rounded-x">
-                                                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                                                        <path d="M10 10l4 4m0 -4l-4 4" />
-                                                        <path
-                                                            d="M12 3c7.2 0 9 1.8 9 9s-1.8 9 -9 9s-9 -1.8 -9 -9s1.8 -9 9 -9z" />
-                                                    </svg>
-                                                    Batalkan
-                                                </a>
-                                            @endif
+                                    <td>
+                                        @if ($d->status_approved == 0)
+                                            <a href="#" class="btn btn-sm btn-primary approve"
+                                                kode_izin="{{ $d->kode_izin }}">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                    viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                                    class="icon icon-tabler icons-tabler-outline icon-tabler-external-link">
+                                                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                                    <path
+                                                        d="M12 6h-6a2 2 0 0 0 -2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-6" />
+                                                    <path d="M11 13l9 -9" />
+                                                    <path d="M15 4h5v5" />
+                                                </svg>
 
-                                        </td>
-                                    @endrole
+                                            </a>
+                                        @else
+                                            <a href="/presensi/{{ $d->kode_izin }}/batalkanizinsakit"
+                                                class="btn btn-sm bg-danger">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                    viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                                    class="icon icon-tabler icons-tabler-outline icon-tabler-square-rounded-x">
+                                                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                                    <path d="M10 10l4 4m0 -4l-4 4" />
+                                                    <path
+                                                        d="M12 3c7.2 0 9 1.8 9 9s-1.8 9 -9 9s-9 -1.8 -9 -9s1.8 -9 9 -9z" />
+                                                </svg>
+                                                Batalkan
+                                            </a>
+                                        @endif
+
+                                    </td>
+
                                 </tr>
                             @endforeach
                         </tbody>

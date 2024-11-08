@@ -9,7 +9,20 @@
         .datepicker-date-display {
             background-color: #0f3a7e !important;
         }
+
+        #max_cuti,
+        #keterangan {
+            background-color: #ffffff;
+            font-size: 14px;
+        }
+
+        #info_max_cuti,
+        #info_jml_hari {
+            font-size: 0.9em;
+            color: #555;
+        }
     </style>
+
     <!--- App Header --->
     <div class="appHeader bg-primary text-light">
         <div class="left">
@@ -37,8 +50,9 @@
                         class="form-control datepicker" placeholder="Sampai">
                 </div>
                 <div class="form-group">
-                    <input type="text" readonly id="jml_hari" name="jml_hari" class="form-control" autocomplete="off"
+                    <input type="hidden" readonly id="jml_hari" name="jml_hari" class="form-control" autocomplete="off"
                         placeholder="Jumlah Hari">
+                    <p id="info_jml_hari"></p>
                 </div>
                 <div class="form-group">
                     <select name="kode_cuti" id="kode_cuti" class="form-control">
@@ -47,6 +61,11 @@
                             <option value="{{ $c->kode_cuti }}">{{ $c->nama_cuti }}</option>
                         @endforeach
                     </select>
+                </div>
+                <div class="form-group">
+                    <textarea name="max_cuti" id="max_cuti" cols="30" rows="1" class="form-control" placeholder="Maksimal Cuti"
+                        readonly style="display:none;"></textarea>
+                    <p id="info_max_cuti"></p>
                 </div>
                 <div class="form-group">
                     <textarea name="keterangan" id="keterangan" cols="30" rows="5" class="form-control" placeholder="Keterangan"></textarea>
@@ -78,25 +97,26 @@
 
                 // Cek apakah tanggal "sampai" belum diisi
                 if (!sampai) {
-                    $("#jml_hari").val("0 Hari");
-                    return; // Keluar dari fungsi jika tanggal "sampai" kosong
+                    $("#jml_hari").val("0");
+                    $("#info_jml_hari").html("<b style='font-size: 0.9em;'>Jumlah Cuti yang Diambil: 0 Hari</b>");
+                    return;
                 }
 
                 // Pastikan tanggal valid sebelum menghitung
                 if (!isNaN(date1.getTime()) && !isNaN(date2.getTime())) {
-                    // Untuk menghitung perbedaan waktu antara dua tanggal
                     var Difference_In_Time = date2.getTime() - date1.getTime();
-
-                    // Untuk menghitung jumlah hari antara dua tanggal
                     var Difference_In_Days = Difference_In_Time / (1000 * 3600 * 24);
 
-                    // Menampilkan jumlah hari dengan keterangan " Hari"
-                    $("#jml_hari").val((Difference_In_Days + 1) + " Hari");
+                    var jmlHari = Difference_In_Days + 1;
+                    $("#jml_hari").val(jmlHari);
+                    $("#info_jml_hari").html("<b style='font-size: 0.9em;'>Jumlah Cuti yang Diambil: " + jmlHari +
+                        " Hari</b>");
                 } else {
-                    // Jika tanggal tidak valid
                     $("#jml_hari").val("Invalid Date");
+                    $("#info_jml_hari").html("<b style='font-size: 0.9em;'>Tanggal tidak valid</b>");
                 }
             }
+
 
             $("#tgl_izin_dari, #tgl_izin_sampai").change(function(e) {
                 loadjumlahhari();
@@ -132,6 +152,8 @@
             $("#frmizin").submit(function(event) {
                 var tgl_izin_dari = $("#tgl_izin_dari").val();
                 var tgl_izin_sampai = $("#tgl_izin_sampai").val();
+                var jml_hari = $("#jml_hari").val();
+                var max_cuti = $("#max_cuti").val();
                 var keterangan = $("#keterangan").val();
                 var kode_cuti = $("#kode_cuti").val();
                 if (tgl_izin_dari == "" || tgl_izin_sampai == "") {
@@ -155,6 +177,44 @@
                         icon: 'warning',
                     });
                     event.preventDefault();
+                } else if (parseInt(jml_hari) > parseInt(max_cuti)) {
+                    Swal.fire({
+                        title: 'Oops!',
+                        text: 'Jumlah Cuti Melebihi Batas Maksimal',
+                        icon: 'warning',
+                    });
+                    event.preventDefault();
+                }
+            });
+
+            $("#kode_cuti").change(function(e) {
+                var kode_cuti = $(this).val();
+                var tgl_izin_dari = $("#tgl_izin_dari").val();
+                if (tgl_izin_dari == "") {
+                    Swal.fire({
+                        title: 'Oops!',
+                        text: 'Tanggal Belum Diisi',
+                        icon: 'warning',
+                    });
+                    event.preventDefault();
+                    $("#kode_cuti").val("");
+                } else {
+                    $.ajax({
+                        url: '/izincuti/getmaxcuti',
+                        type: 'POST',
+                        data: {
+                            _token: "{{ csrf_token() }}",
+                            kode_cuti: kode_cuti,
+                            tgl_izin_dari: tgl_izin_dari
+                        },
+                        cache: false,
+                        success: function(respond) {
+                            $("#max_cuti").val(respond);
+                            $("#info_max_cuti").html(
+                                "<b style='font-size: 0.9em;'>Maks. Cuti yang Bisa Diambil Adalah :" +
+                                respond + " Hari</b>");
+                        }
+                    });
                 }
             });
         });
