@@ -55,23 +55,20 @@
                                         </div>
                                     </div>
                                 </div>
-                                @role('administrator')
-                                    <div class="row mt-2">
-                                        <div class="col-12">
-                                            <div class="form-group">
-                                                <select name="kode_cabang" id="kode_cabang" class="form-select">
-                                                    <option value="">Semua Cabang</option>
-                                                    @foreach ($cabang as $d)
-                                                        <option value="{{ $d->kode_cabang }}">{{ $d->kode_cabang }}</option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
+
+                                <div class="row mt-2">
+                                    <div class="col-12">
+                                        <div class="form-group">
+                                            <select name="kode_cabang" id="kode_cabang" class="form-select">
+                                                <option value="">Semua Cabang</option>
+                                                @foreach ($cabang as $d)
+                                                    <option value="{{ $d->kode_cabang }}">{{ $d->kode_cabang }}</option>
+                                                @endforeach
+                                            </select>
                                         </div>
                                     </div>
-                                @else
-                                    <input type="hidden" name="kode_cabang"
-                                        value="{{ Auth::guard('user')->user()->kode_cabang }}">
-                                @endrole
+                                </div>
+
                                 <div class="row mt-2">
                                     <div class="col-6">
                                         <div class="form-group">

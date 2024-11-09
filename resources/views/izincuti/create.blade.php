@@ -117,12 +117,9 @@
                 }
             }
 
-
             $("#tgl_izin_dari, #tgl_izin_sampai").change(function(e) {
                 loadjumlahhari();
             });
-
-
 
             //$("#tgl_izin").change(function(e) {
             //    $.ajax({

@@ -67,9 +67,10 @@ class PresensiController extends Controller
             ->count();
         $kode_cabang = Auth::guard('karyawan')->user()->kode_cabang;
         $lok_kantor = DB::table('cabang')->where('kode_cabang', $kode_cabang)->first();
+
         $jamkerja = DB::table('konfigurasi_jamkerja')
         ->join('jam_kerja', 'konfigurasi_jamkerja.kode_jam_kerja', '=', 'jam_kerja.kode_jam_kerja')
-        ->where('nik', $nik)->where('hari', $namahari)->first();
+        ->where('nik', $nik)->where('tanggal', $hariini)->first();
 
         if($jamkerja == null) {
             $jamkerja = DB::table('konfigurasi_jk_dept_detail')
@@ -113,11 +114,12 @@ class PresensiController extends Controller
     $radius_cabang = round($jarak['meters']);
 
     //Cek Jam Kerja Karyawan
+    $hariini = date("Y-m-d");
     $namahari = $this->gethari();
-    $jamkerja = DB::table('konfigurasi_jamkerja')
-        ->join('jam_kerja', 'konfigurasi_jamkerja.kode_jam_kerja', '=', 'jam_kerja.kode_jam_kerja')
-        ->where('nik', $nik)->where('hari', $namahari)->first();
 
+    $jamkerja = DB::table('konfigurasi_jamkerja')
+    ->join('jam_kerja', 'konfigurasi_jamkerja.kode_jam_kerja', '=', 'jam_kerja.kode_jam_kerja')
+    ->where('nik', $nik)->where('tanggal', $hariini)->first();
         if($jamkerja == null) {
             $jamkerja = DB::table('konfigurasi_jk_dept_detail')
             ->join('konfigurasi_jk_dept','konfigurasi_jk_dept_detail.kode_jk_dept','=','konfigurasi_jk_dept.kode_jk_dept')

@@ -95,14 +95,7 @@ Route::group(['middleware' => ['role:administrator|admin cabang,user']], functio
     Route::get('/presensi/monitoring', [PresensiController::class, 'monitoring']);
     Route::post('/getpresensi', [PresensiController::class, 'getpresensi']);
     Route::post('/tampilkanpeta', [PresensiController::class, 'tampilkanpeta']);
-    Route::get('/presensi/laporan', [PresensiController::class, 'laporan']);
-    Route::post('/presensi/cetaklaporan', [PresensiController::class, 'cetaklaporan']);
-    Route::get('/presensi/rekap', [PresensiController::class, 'rekap']);
-    Route::post('/presensi/cetakrekap', [PresensiController::class, 'cetakrekap']);
     Route::get('/presensi/izinsakit', [PresensiController::class, 'izinsakit']);
-    Route::post('/presensi/approveizinsakit', [PresensiController::class, 'approveizinsakit']);
-    Route::get('/presensi/{kode_izin}/batalkanizinsakit', [PresensiController::class, 'batalkanizinsakit']);
-
 });
 
 //Rute untuk Admin
@@ -122,6 +115,12 @@ Route::group(['middleware' => ['role:administrator,user']], function () {
     Route::delete('/departemen/{kode_dept}/delete', [DepartemenController::class, 'delete']);
 
     //Presensi
+    Route::get('/presensi/laporan', [PresensiController::class, 'laporan']);
+    Route::post('/presensi/cetaklaporan', [PresensiController::class, 'cetaklaporan']);
+    Route::get('/presensi/rekap', [PresensiController::class, 'rekap']);
+    Route::post('/presensi/cetakrekap', [PresensiController::class, 'cetakrekap']);
+    Route::post('/presensi/approveizinsakit', [PresensiController::class, 'approveizinsakit']);
+    Route::get('/presensi/{kode_izin}/batalkanizinsakit', [PresensiController::class, 'batalkanizinsakit']);
 
     //Cabang
     Route::get('/cabang', [CabangController::class, 'index']);
@@ -139,7 +138,6 @@ Route::group(['middleware' => ['role:administrator,user']], function () {
     Route::post('/konfigurasi/editjamkerja', [KonfigurasiController::class, 'editjamkerja']);
     Route::post('/konfigurasi/updatejamkerja', [KonfigurasiController::class, 'updatejamkerja']);
     Route::delete('/konfigurasi/{kode_jam_kerja}/delete', [KonfigurasiController::class, 'delete']);
-
 
     Route::get('/konfigurasi/jamkerjadept', [KonfigurasiController::class, 'jamkerjadept']);
     Route::get('/konfigurasi/jamkerjadept/create', [KonfigurasiController::class, 'createjamkerjadept']);
