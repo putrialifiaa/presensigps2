@@ -57,12 +57,12 @@ class PresensiController extends Controller
 
     public function create()
     {
-        $hariini = date("Y-m-d");
+        $tgl_presensi = date('Y-m-d');
         $namahari = $this->gethari();
         $nik = Auth::guard('karyawan')->user()->nik;
         $kode_dept = Auth::guard('karyawan')->user()->kode_dept;
         $cek = DB::table('presensi')
-            ->where('tgl_presensi', $hariini)
+            ->where('tgl_presensi', $tgl_presensi)
             ->where('nik', $nik)
             ->count();
         $kode_cabang = Auth::guard('karyawan')->user()->kode_cabang;
@@ -70,7 +70,7 @@ class PresensiController extends Controller
 
         $jamkerja = DB::table('konfigurasi_jamkerja')
         ->join('jam_kerja', 'konfigurasi_jamkerja.kode_jam_kerja', '=', 'jam_kerja.kode_jam_kerja')
-        ->where('nik', $nik)->where('tanggal', $hariini)->first();
+        ->where('nik', $nik)->where('hari', $namahari)->first();
 
         if($jamkerja == null) {
             $jamkerja = DB::table('konfigurasi_jk_dept_detail')
@@ -114,12 +114,11 @@ class PresensiController extends Controller
     $radius_cabang = round($jarak['meters']);
 
     //Cek Jam Kerja Karyawan
-    $hariini = date("Y-m-d");
     $namahari = $this->gethari();
 
     $jamkerja = DB::table('konfigurasi_jamkerja')
     ->join('jam_kerja', 'konfigurasi_jamkerja.kode_jam_kerja', '=', 'jam_kerja.kode_jam_kerja')
-    ->where('nik', $nik)->where('tanggal', $hariini)->first();
+    ->where('nik', $nik)->where('hari', $namahari)->first();
         if($jamkerja == null) {
             $jamkerja = DB::table('konfigurasi_jk_dept_detail')
             ->join('konfigurasi_jk_dept','konfigurasi_jk_dept_detail.kode_jk_dept','=','konfigurasi_jk_dept.kode_jk_dept')
@@ -594,7 +593,10 @@ class PresensiController extends Controller
         $user = User::find(Auth::guard('user')->user()->id);
 
         $query = Pengajuanizin::query();
-        $query->select('kode_izin', 'tgl_izin_dari', 'tgl_izin_sampai', 'pengajuan_izin.nik', 'nama_lengkap', 'jabatan', 'status', 'status_approved', 'keterangan');
+        $query->select(
+            'kode_izin', 'tgl_izin_dari', 'tgl_izin_sampai',
+            'pengajuan_izin.nik', 'nama_lengkap', 'jabatan', 'status',
+            'status_approved', 'keterangan', 'doc_sid');
         $query->join('karyawan', 'pengajuan_izin.nik', '=', 'karyawan.nik');
         if(!empty($request->dari) && !empty($request->sampai)){
             $query->whereBetween('tgl_izin_dari', [$request->dari, $request->sampai]);
