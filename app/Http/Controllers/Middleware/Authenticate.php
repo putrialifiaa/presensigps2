@@ -107,12 +107,10 @@ class Authenticate implements AuthenticatesRequests
             return route('loginadmin'); // Mengarahkan ke login admin jika URL berisi "panel"
         } else {
             return route('login'); // Mengarahkan ke login umum (karyawan)
-            }
-
+        }
     }
     return null;
 }
-
 
     /**
      * Specify the callback that should be used to generate the redirect path.
