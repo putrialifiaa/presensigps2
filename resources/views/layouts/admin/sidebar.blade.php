@@ -374,10 +374,7 @@
                         <div class="dropdown-menu {{ request()->is(['konfigurasi', 'konfigurasi/*']) ? 'show' : '' }}">
                             <div class="dropdown-menu-columns">
                                 <div class="dropdown-menu-column">
-                                    <a class="dropdown-item {{ request()->is(['konfigurasi/lokasikantor']) ? 'active' : '' }}"
-                                        href="/konfigurasi/lokasikantor">
-                                        Lokasi Kantor
-                                    </a>
+
                                 </div>
                             </div>
                             <div class="dropdown-menu-columns">

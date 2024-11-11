@@ -31,20 +31,15 @@
 
     @yield('header')
 
-
     <!-- App Capsule -->
     <div id="appCapsule">
         @yield('content')
     </div>
     <!-- * App Capsule -->
 
-
     @include('layouts.bottomNav')
 
-
     @include('layouts.script')
-
-
 
 </body>
 

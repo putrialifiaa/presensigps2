@@ -69,8 +69,6 @@ class PresensiController extends Controller
         $kode_cabang = Auth::guard('karyawan')->user()->kode_cabang;
         $lok_kantor = DB::table('cabang')->where('kode_cabang', $kode_cabang)->first();
 
-
-
         $jamkerja = DB::table('konfigurasi_jamkerja')
         ->join('jam_kerja', 'konfigurasi_jamkerja.kode_jam_kerja', '=', 'jam_kerja.kode_jam_kerja')
         ->where('nik', $nik)->where('hari', $namahari)->first();
@@ -120,17 +118,25 @@ class PresensiController extends Controller
 
     //Cek Jam Kerja Karyawan
     $namahari = $this->gethari();
-
     $jamkerja = DB::table('konfigurasi_jamkerja')
-    ->join('jam_kerja', 'konfigurasi_jamkerja.kode_jam_kerja', '=', 'jam_kerja.kode_jam_kerja')
-    ->where('nik', $nik)->where('hari', $namahari)->first();
+        ->join('jam_kerja', 'konfigurasi_jamkerja.kode_jam_kerja', '=', 'jam_kerja.kode_jam_kerja')
+        ->where('nik', $nik)->where('hari', $namahari)->first();
+
         if($jamkerja == null) {
-            $jamkerja = DB::table('konfigurasi_jk_dept_detail')
-            ->join('konfigurasi_jk_dept','konfigurasi_jk_dept_detail.kode_jk_dept','=','konfigurasi_jk_dept.kode_jk_dept')
-            ->join('jam_kerja', 'konfigurasi_jk_dept_detail.kode_jam_kerja', '=', 'jam_kerja.kode_jam_kerja')
-            ->where('kode_dept', $kode_dept)
-            ->where('kode_cabang', $kode_cabang)
-            ->where('hari', $namahari)->first();
+                $jamkerja = DB::table('konfigurasi_jk_dept_detail')
+                ->join('konfigurasi_jk_dept','konfigurasi_jk_dept_detail.kode_jk_dept','=','konfigurasi_jk_dept.kode_jk_dept')
+                ->join('jam_kerja', 'konfigurasi_jk_dept_detail.kode_jam_kerja', '=', 'jam_kerja.kode_jam_kerja')
+                ->where('kode_dept', $kode_dept)
+                ->where('kode_cabang', $kode_cabang)
+                ->where('hari', $namahari)->first();
+        }
+
+        if ($jamkerja === null) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Jadwal kerja tidak ditemukan',
+                'type' => 'schedule'
+            ], 400);
         }
 
     $maxRadius = 10000; // Radius maksimal dalam meter
@@ -260,19 +266,42 @@ class PresensiController extends Controller
     }
 }
 
-
     // Fungsi untuk menghitung jarak antara dua titik koordinat
-    function distance($lat1, $lon1, $lat2, $lon2)
-    {
-        $theta = $lon1 - $lon2;
-        $miles = (sin(deg2rad($lat1)) * sin(deg2rad($lat2)))
-            + (cos(deg2rad($lat1)) * cos(deg2rad($lat2)) * cos(deg2rad($theta)));
-        $miles = acos($miles);
-        $miles = rad2deg($miles);
-        $miles = $miles * 60 * 1.1515;
-        $meters = $miles * 1609.344; // Konversi dari mil ke meter
-        return compact('meters');
-    }
+    /**
+ * Menghitung jarak antara dua titik koordinat (latitude dan longitude) dalam meter
+ *
+ * @param float $lat1 - latitude titik pertama
+ * @param float $lon1 - longitude titik pertama
+ * @param float $lat2 - latitude titik kedua
+ * @param float $lon2 - longitude titik kedua
+ * @return array - jarak dalam meter dan kilometer
+ */
+public function distance($lat1, $lon1, $lat2, $lon2)
+{
+    // Radius bumi dalam meter
+    $earthRadius = 6371000;
+
+    // Mengubah derajat ke radian
+    $lat1 = deg2rad($lat1);
+    $lon1 = deg2rad($lon1);
+    $lat2 = deg2rad($lat2);
+    $lon2 = deg2rad($lon2);
+
+    // Menghitung delta (selisih) latitude dan longitude
+    $deltaLat = $lat2 - $lat1;
+    $deltaLon = $lon2 - $lon1;
+
+    // Haversine formula
+    $a = sin($deltaLat / 2) * sin($deltaLat / 2) +
+         cos($lat1) * cos($lat2) *
+         sin($deltaLon / 2) * sin($deltaLon / 2);
+    $c = 2 * atan2(sqrt($a), sqrt(1 - $a));
+
+    // Jarak dalam meter
+    $distanceMeters = $earthRadius * $c;
+
+    return ['meters' => round($distanceMeters, 2)];
+}
 
     // Method untuk halaman edit profile
     public function editprofile()
@@ -408,7 +437,6 @@ class PresensiController extends Controller
 
     public function monitoring(){
 
-
         return view('presensi.monitoring');
     }
 
@@ -438,7 +466,6 @@ class PresensiController extends Controller
             ->where('tgl_presensi', $tanggal)
             ->get();
         }
-
 
         return view('presensi.getpresensi', compact('presensi'));
     }
