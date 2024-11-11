@@ -47,7 +47,7 @@
         <div class="col">
             <div class="alert alert-warning">
                 <p>
-                    Jadwal Anda Kosong/Belum Disetting. Hubungi yang Bersangkutan!
+                    Anda Sudah Melakukan Presensi/Pengajuan Izin!
                 </p>
             </div>
         </div>

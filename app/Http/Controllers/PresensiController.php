@@ -61,12 +61,15 @@ class PresensiController extends Controller
         $namahari = $this->gethari();
         $nik = Auth::guard('karyawan')->user()->nik;
         $kode_dept = Auth::guard('karyawan')->user()->kode_dept;
-        $cek = DB::table('presensi')
+        $presensi = DB::table('presensi')
             ->where('tgl_presensi', $tgl_presensi)
-            ->where('nik', $nik)
-            ->count();
+            ->where('nik', $nik);
+        $cek = $presensi->count();
+        $datapresensi = $presensi->first();
         $kode_cabang = Auth::guard('karyawan')->user()->kode_cabang;
         $lok_kantor = DB::table('cabang')->where('kode_cabang', $kode_cabang)->first();
+
+
 
         $jamkerja = DB::table('konfigurasi_jamkerja')
         ->join('jam_kerja', 'konfigurasi_jamkerja.kode_jam_kerja', '=', 'jam_kerja.kode_jam_kerja')
@@ -81,10 +84,12 @@ class PresensiController extends Controller
             ->where('hari', $namahari)->first();
         }
 
-        if($jamkerja == null) {
+        if($datapresensi != null && $datapresensi->status != "h") {
+            return view('presensi.notifizin');
+        } else if($jamkerja == null) {
                 return view('presensi.notifjadwal');
             } else {
-            return view('presensi.create', compact('cek', 'lok_kantor', 'jamkerja'));
+            return view('presensi.create', compact('cek', 'lok_kantor', 'jamkerja', 'tgl_presensi'));
         }
     }
 
