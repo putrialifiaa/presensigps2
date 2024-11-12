@@ -80,7 +80,7 @@ Route::middleware('auth:karyawan')->group(function () {
 // Rute untuk Admin dan Admin Cabang
 Route::group(['middleware' => ['role:administrator|admin cabang,user']], function () {
     Route::get('/proseslogoutadmin', [AuthController::class, 'proseslogoutadmin']);
-    Route::get('/panel/dashboardadmin', [DashboardController::class, 'dashboardadmin']);
+    Route::get('/panel/dashboardadmin', [DashboardController::class, 'dashboardadmin'])->name('dashboardadmin');
 
     //Karyawan
     Route::get('/karyawan', [KaryawanController::class, 'index']);
