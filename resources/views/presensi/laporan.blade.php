@@ -7,7 +7,7 @@
                     <!--- Page pre-title --->
 
                     <h2 class="page-title">
-                        Laporan Presensi
+                        Laporan Presensi Per-Karyawan
                     </h2>
                 </div>
             </div>

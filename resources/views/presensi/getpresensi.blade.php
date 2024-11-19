@@ -33,6 +33,7 @@ function selisih($jam_masuk, $jam_keluar)
             <td>{{ $loop->iteration }}</td>
             <td>{{ $d->nik }}</td>
             <td>{{ $d->nama_lengkap }}</td>
+            <td>{{ $d->nama_cabang }}</td>
             <td>{{ $d->kode_dept }}</td>
             <td>{{ $d->nama_jam_kerja }} ({{ $d->jam_masuk }} s/d {{ $d->jam_pulang }})</td>
             <td>{{ $d->jam_in }}</td>
@@ -91,6 +92,7 @@ function selisih($jam_masuk, $jam_keluar)
             <td>{{ $loop->iteration }}</td>
             <td>{{ $d->nik }}</td>
             <td>{{ $d->nama_lengkap }}</td>
+            <td>{{ $d->nama_cabang }}</td>
             <td>{{ $d->kode_dept }}</td>
             <td></td>
             <td></td>

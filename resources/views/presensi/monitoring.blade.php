@@ -50,6 +50,7 @@
                                             <th>No.</th>
                                             <th>NIK</th>
                                             <th>Nama Karyawan</th>
+                                            <th>Cabang</th>
                                             <th>Departemen</th>
                                             <th>Jadwal</th>
                                             <th>Jam Masuk</th>

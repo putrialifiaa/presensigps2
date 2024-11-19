@@ -448,20 +448,22 @@ public function distance($lat1, $lon1, $lat2, $lon2)
 
         if($user->hasRole('admin cabang')){
             $presensi = DB::table('presensi')
-            ->select('presensi.*','nama_lengkap','karyawan.kode_dept', 'jam_masuk', 'nama_jam_kerja', 'jam_masuk', 'jam_pulang', 'keterangan')
+            ->select('presensi.*','nama_lengkap', 'cabang.nama_cabang', 'karyawan.kode_dept', 'jam_masuk', 'nama_jam_kerja', 'jam_masuk', 'jam_pulang', 'keterangan')
             ->leftJoin('jam_kerja', 'presensi.kode_jam_kerja', '=', 'jam_kerja.kode_jam_kerja')
             ->leftJoin('pengajuan_izin', 'presensi.kode_izin', '=', 'pengajuan_izin.kode_izin')
             ->join('karyawan','presensi.nik','=','karyawan.nik')
+            ->join('cabang', 'karyawan.kode_cabang', '=', 'cabang.kode_cabang')
             ->join('departemen','karyawan.kode_dept','=','departemen.kode_dept')
             ->where('tgl_presensi', $tanggal)
             ->where('karyawan.kode_cabang',$kode_cabang)
             ->get();
         } else if ($user->hasRole('administrator')) {
             $presensi = DB::table('presensi')
-            ->select('presensi.*','nama_lengkap','karyawan.kode_dept', 'jam_masuk', 'nama_jam_kerja', 'jam_masuk', 'jam_pulang', 'keterangan')
+            ->select('presensi.*','nama_lengkap', 'cabang.nama_cabang','karyawan.kode_dept', 'jam_masuk', 'nama_jam_kerja', 'jam_masuk', 'jam_pulang', 'keterangan')
             ->leftJoin('jam_kerja', 'presensi.kode_jam_kerja', '=', 'jam_kerja.kode_jam_kerja')
             ->leftJoin('pengajuan_izin', 'presensi.kode_izin', '=', 'pengajuan_izin.kode_izin')
             ->join('karyawan','presensi.nik','=','karyawan.nik')
+            ->join('cabang', 'karyawan.kode_cabang', '=', 'cabang.kode_cabang')
             ->join('departemen','karyawan.kode_dept','=','departemen.kode_dept')
             ->where('tgl_presensi', $tanggal)
             ->get();
@@ -517,13 +519,12 @@ public function distance($lat1, $lon1, $lat2, $lon2)
         ->orderBy('tgl_presensi')
         ->get();
 
-        if (isset($_POST['export'])) {
-            $time = date("H:i:S");
+        if (isset($_POST['exportexcel'])) {
+            $time = date("d-M-Y H:i:s");
             // Fungsi header dengan mengirimkan raw data excel
             header("Content-type: application/vnd-ms-excel");
             // Mendefinisikan nama file ekspor "hasil-export.xls"
             header("Content-Disposition: attachment; filename=Laporan Presensi Karyawan $time.xls");
-            return view('presensi.cetaklaporanexcel', compact('bulan', 'tahun', 'namabulan', 'karyawan', 'presensi'));
         }
         return view('presensi.cetaklaporan', compact('bulan', 'tahun', 'namabulan', 'karyawan', 'presensi'));
     }

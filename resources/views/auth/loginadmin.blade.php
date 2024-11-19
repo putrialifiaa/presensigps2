@@ -13,8 +13,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>Sign in with illustration - Tabler - Premium and Open Source dashboard template with responsive and high
-        quality UI.</title>
+    <title>Login Admin</title>
     <!-- CSS files -->
     <link href="{{ asset('tabler/dist/css/tabler.min.css?1692870487') }}" rel="stylesheet" />
     <link href="{{ asset('tabler/dist/css/tabler-flags.min.css?1692870487') }}" rel="stylesheet" />
@@ -63,9 +62,7 @@
                                     <div class="mb-2">
                                         <label class="form-label">
                                             Password
-                                            <span class="form-label-description">
-                                                <a href="./forgot-password.html">I forgot password</a>
-                                            </span>
+
                                         </label>
                                         <div class="input-group input-group-flat">
                                             <input type="password" name="password" class="form-control"
@@ -86,12 +83,7 @@
                                             </span>
                                         </div>
                                     </div>
-                                    <div class="mb-2">
-                                        <label class="form-check">
-                                            <input type="checkbox" class="form-check-input" />
-                                            <span class="form-check-label">Remember me on this device</span>
-                                        </label>
-                                    </div>
+
                                     <div class="form-footer">
                                         <button type="submit" class="btn btn-primary w-100">Sign in</button>
                                     </div>
@@ -101,7 +93,7 @@
                     </div>
                 </div>
                 <div class="col-lg d-none d-lg-block">
-                    <img src="{{ asset('tabler/static/illustrations/undraw_secure_login_pdn4.svg') }}" height="300"
+                    <img src="{{ asset('tabler/static/illustrations/iconlogin.png') }}" height="300"
                         class="d-block mx-auto" alt="">
                 </div>
             </div>
