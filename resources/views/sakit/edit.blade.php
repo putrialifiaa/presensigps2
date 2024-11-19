@@ -150,6 +150,8 @@
                 var tgl_izin_dari = $("#tgl_izin_dari").val();
                 var tgl_izin_sampai = $("#tgl_izin_sampai").val();
                 var keterangan = $("#keterangan").val();
+                var sid = $("#fileuploadInput").val();
+                console.log("File Upload Value: ", sid); // Debugging
 
                 if (tgl_izin_dari == "" || tgl_izin_sampai == "") {
                     Swal.fire({
@@ -162,6 +164,13 @@
                     Swal.fire({
                         title: 'Oops!',
                         text: 'Keterangan Harus Diisi',
+                        icon: 'warning',
+                    });
+                    event.preventDefault();
+                } else if (!sid) {
+                    Swal.fire({
+                        title: 'Oops!',
+                        text: 'Surat Dokter Harus Diunggah',
                         icon: 'warning',
                     });
                     event.preventDefault();
