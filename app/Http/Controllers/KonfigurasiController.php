@@ -168,12 +168,29 @@ class KonfigurasiController extends Controller
         }
     }
 
-    public function jamkerjadept(){
+    public function jamkerjadept(Request $request) {
+        // Ambil parameter pencarian
+        $kode_cabang = $request->input('kode_cabang'); // Mengambil nilai dari parameter GET
+
+        // Mulai query untuk mengambil data jamkerjadept
         $jamkerjadept = DB::table('konfigurasi_jk_dept')
-        ->join('cabang', 'konfigurasi_jk_dept.kode_cabang', '=', 'cabang.kode_cabang')
-        ->join('departemen', 'konfigurasi_jk_dept.kode_dept', '=', 'departemen.kode_dept')
-        ->get();
-        return view('konfigurasi.jamkerjadept', compact('jamkerjadept'));
+            ->join('cabang', 'konfigurasi_jk_dept.kode_cabang', '=', 'cabang.kode_cabang')
+            ->join('departemen', 'konfigurasi_jk_dept.kode_dept', '=', 'departemen.kode_dept')
+            ->select('konfigurasi_jk_dept.*', 'cabang.nama_cabang', 'departemen.nama_dept');
+
+        // Jika ada filter berdasarkan kode_cabang, tambahkan kondisinya
+        if ($kode_cabang) {
+            $jamkerjadept->where('konfigurasi_jk_dept.kode_cabang', $kode_cabang);
+        }
+
+        // Lakukan pagination untuk hasil query
+        $jamkerjadept = $jamkerjadept->paginate(10);
+
+        // Ambil semua cabang untuk dropdown filter
+        $cabang_all = DB::table('cabang')->get();
+
+        // Kembalikan data ke view
+        return view('konfigurasi.jamkerjadept', compact('jamkerjadept', 'cabang_all'));
     }
 
     public function createjamkerjadept() {
@@ -184,37 +201,62 @@ class KonfigurasiController extends Controller
     }
 
     public function storejamkerjadept(Request $request)
-    {
-        $kode_cabang = $request->kode_cabang;
-        $kode_dept = $request->kode_dept;
-        $hari = $request->hari;
-        $kode_jam_kerja = $request->kode_jam_kerja;
-        $kode_jk_dept = "J" . $kode_cabang . $kode_dept;
+{
+    $request->validate([
+        'kode_cabang' => 'required|exists:cabang,kode_cabang',
+        'kode_dept' => 'required|exists:departemen,kode_dept',
+        'hari' => 'required|array',
+        'hari.*' => 'required|string',
+        'kode_jam_kerja' => 'required|array',
+        'kode_jam_kerja.*' => 'required|exists:jam_kerja,kode_jam_kerja',
+    ], [
+        'kode_cabang.required' => 'Kode cabang wajib diisi.',
+        'kode_cabang.exists' => 'Kode cabang tidak valid.',
+        'kode_dept.required' => 'Kode departemen wajib diisi.',
+        'kode_dept.exists' => 'Kode departemen tidak valid.',
+        'hari.required' => 'Hari wajib diisi.',
+        'hari.array' => 'Hari harus berupa array.',
+        'hari.*.required' => 'Setiap hari wajib diisi.',
+        'kode_jam_kerja.required' => 'Kode jam kerja wajib diisi.',
+        'kode_jam_kerja.array' => 'Kode jam kerja harus berupa array.',
+        'kode_jam_kerja.*.exists' => 'Kode jam kerja tidak valid.',
+    ]);
 
-        DB::beginTransaction();
-        try {
-            //Menyimpan Data ke table konfigurasi_jk_dept
-            DB::table('konfigurasi_jk_dept')->insert([
+    $kode_cabang = $request->kode_cabang;
+    $kode_dept = $request->kode_dept;
+    $hari = $request->hari;
+    $kode_jam_kerja = $request->kode_jam_kerja;
+    $kode_jk_dept = "J" . $kode_cabang . $kode_dept;
+
+    DB::beginTransaction();
+    try {
+        // Simpan data ke tabel konfigurasi_jk_dept
+        DB::table('konfigurasi_jk_dept')->insert([
+            'kode_jk_dept' => $kode_jk_dept,
+            'kode_cabang' => $kode_cabang,
+            'kode_dept' => $kode_dept
+        ]);
+
+        // Simpan detail jam kerja per hari
+        $data = [];
+        for ($i = 0; $i < count($hari); $i++) {
+            $data[] = [
                 'kode_jk_dept' => $kode_jk_dept,
-                'kode_cabang' => $kode_cabang,
-                'kode_dept' => $kode_dept
-            ]);
-
-            for($i = 0; $i < count($hari); $i++) {
-                $data[] = [
-                    'kode_jk_dept' => $kode_jk_dept,
-                    'hari' => $hari[$i],
-                    'kode_jam_kerja' => $kode_jam_kerja[$i]
-                 ];
-            }
-            Setjamkerjadept::insert($data);
-            DB::commit();
-            return redirect('konfigurasi/jamkerjadept')->with(['success' => 'Data Berhasil Disimpan']);
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return redirect('konfigurasi/jamkerjadept')->with(['warning' => 'Data Gagal Disimpan']);
+                'hari' => $hari[$i],
+                'kode_jam_kerja' => $kode_jam_kerja[$i]
+            ];
         }
+        Setjamkerjadept::insert($data);
+
+        DB::commit();
+        return redirect('konfigurasi/jamkerjadept')->with(['success' => 'Data Berhasil Disimpan']);
+    } catch (\Exception $e) {
+        DB::rollBack();
+        return redirect('konfigurasi/jamkerjadept')->with([
+            'warning' => 'Data Gagal Disimpan. Error: ' . $e->getMessage()
+        ]);
     }
+}
 
     public function editjamkerjadept($kode_jk_dept){
 

@@ -1,5 +1,6 @@
 <form action="/cabang/update" method="POST" id="frmCabangEdit">
     @csrf
+    <input type="hidden" name="kode_cabang_lama" value="{{ $cabang->kode_cabang }}">
     <div class="row">
         <div class="col-12">
             <div class="input-icon mb-3">
@@ -19,8 +20,8 @@
                         <path d="M19 11l0 2" />
                     </svg>
                 </span>
-                <input type="text" value="{{ $cabang->kode_cabang }}" readonly id="kode_cabang" class="form-control"
-                    placeholder="Kode Cabang" name="kode_cabang">
+                <input type="text" value="{{ $cabang->kode_cabang }}" id="kode_cabang" class="form-control"
+                    placeholder="Kode Lokasi" name="kode_cabang">
             </div>
         </div>
     </div>
@@ -47,7 +48,7 @@
                     </svg>
                 </span>
                 <input type="text" id="nama_cabang" value="{{ $cabang->nama_cabang }}" class="form-control"
-                    name="nama_cabang" placeholder="Nama Cabang">
+                    name="nama_cabang" placeholder="Nama Lokasi">
             </div>
         </div>
     </div>
@@ -68,7 +69,7 @@
                     </svg>
                 </span>
                 <input type="text" id="lokasi_cabang" value="{{ $cabang->lokasi_cabang }}" class="form-control"
-                    name="lokasi_cabang" placeholder="Lokasi Cabang">
+                    name="lokasi_cabang" placeholder="Titik Koordinat">
             </div>
         </div>
     </div>

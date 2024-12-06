@@ -9,9 +9,26 @@ use Illuminate\Http\Request;
 
 class CabangController extends Controller
 {
-    public function index(){
-        $cabang = DB::table('cabang')->orderBy('kode_cabang')->get();
-        return view('cabang.index', compact('cabang'));
+    public function index(Request $request) {
+        // Ambil semua data cabang untuk dropdown
+        $cabang_all = DB::table('cabang')->orderBy('nama_cabang')->get();
+
+        // Ambil parameter pencarian
+        $kode_cabang = $request->kode_cabang;
+
+        // Query data dengan filter (jika ada)
+        $query = DB::table('cabang')->orderBy('kode_cabang');
+        if (!empty($kode_cabang)) {
+            $query->where('kode_cabang', $kode_cabang);
+        }
+
+        // Paginate hasilnya
+        $cabang = $query->paginate(10);
+
+        // Tambahkan query string agar pagination tetap membawa parameter pencarian
+        $cabang->appends(['kode_cabang' => $kode_cabang]);
+
+        return view('cabang.index', compact('cabang', 'cabang_all'));
     }
 
     public function store(Request $request)
@@ -42,27 +59,42 @@ class CabangController extends Controller
         return view('cabang.edit', compact('cabang'));
     }
 
-    public function update(Request $request){
-        $kode_cabang = $request->kode_cabang;
-        $nama_cabang = $request->nama_cabang;
-        $lokasi_cabang =  $request->lokasi_cabang;
-        $radius_cabang = $request->radius_cabang;
+    public function update(Request $request)
+{
+    $kode_cabang_lama = $request->kode_cabang_lama; // Kode lama
+    $kode_cabang_baru = $request->kode_cabang;     // Kode baru
+    $nama_cabang = $request->nama_cabang;
+    $lokasi_cabang = $request->lokasi_cabang;
+    $radius_cabang = $request->radius_cabang;
 
-        try {
-            $data = [
-                'nama_cabang' => $nama_cabang,
-                'lokasi_cabang' => $lokasi_cabang,
-                'radius_cabang' => $radius_cabang
-            ];
+    try {
+        // Cek apakah kode cabang baru sudah digunakan
+        $exists = DB::table('cabang')
+            ->where('kode_cabang', $kode_cabang_baru)
+            ->where('kode_cabang', '!=', $kode_cabang_lama)
+            ->exists();
 
-            DB::table('cabang')
-            ->where('kode_cabang', $kode_cabang)
-            ->update($data);
-            return Redirect::back()->with(['success' => 'Data Berhasil Diupdate']);
-        } catch (\Exception $e) {
-            return Redirect::back()->with(['warning' => 'Data Gagal Diupdate']);
+        if ($exists) {
+            return Redirect::back()->with(['warning' => 'Kode Cabang Baru Sudah Digunakan']);
         }
+
+        // Update data
+        $data = [
+            'kode_cabang' => $kode_cabang_baru,
+            'nama_cabang' => $nama_cabang,
+            'lokasi_cabang' => $lokasi_cabang,
+            'radius_cabang' => $radius_cabang,
+        ];
+
+        DB::table('cabang')
+            ->where('kode_cabang', $kode_cabang_lama)
+            ->update($data);
+
+        return Redirect::back()->with(['success' => 'Data Berhasil Diupdate']);
+    } catch (\Exception $e) {
+        return Redirect::back()->with(['warning' => 'Data Gagal Diupdate: ' . $e->getMessage()]);
     }
+}
 
     public function delete($kode_cabang){
         $hapus = DB::table('cabang')->where('kode_cabang',$kode_cabang)->delete();

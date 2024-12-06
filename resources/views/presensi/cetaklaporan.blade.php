@@ -127,7 +127,7 @@
                 <td>{{ $karyawan->nama_lengkap }}</td>
             </tr>
             <tr>
-                <td>Departemen</td>
+                <td>Unit</td>
                 <td>:</td>
                 <td>{{ $karyawan->nama_dept }}</td>
             </tr>

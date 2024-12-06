@@ -46,11 +46,11 @@ class RedirectIfAuthenticated
 
             // Arahkan ke dashboard admin jika peran adalah admin
             if ($user->role === 'user') {
-                return route('/dashboardadmin'); // Ganti dengan rute dashboard admin Anda
+                return route('dashboardadmin'); // Ganti dengan rute dashboard admin Anda
             }
             // Arahkan ke dashboard karyawan jika peran adalah karyawan
             elseif ($user->role === 'karyawan') {
-                return route('/dashboard'); // Ganti dengan rute dashboard karyawan Anda
+                return route('dashboard'); // Ganti dengan rute dashboard karyawan Anda
             }
         }
 

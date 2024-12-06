@@ -44,18 +44,28 @@ class DepartemenController extends Controller
         return view('departemen.edit', compact('departemen'));
     }
 
-    public function update($kode_dept, Request $request)
+    public function update($kode_dept_lama, Request $request)
 {
-    $nama_dept = $request->nama_dept;
-    $data = [
-        'nama_dept' => $nama_dept
-    ];
+    $request->validate([
+        'kode_dept' => 'required|max:255|unique:departemen,kode_dept,' . $kode_dept_lama . ',kode_dept',
+        'nama_dept' => 'required|max:255',
+    ]);
 
-    $update = DB::table('departemen')->where('kode_dept', $kode_dept)->update($data);
-    if($update){
-        return Redirect::back()->with(['success'=>'Data Berhasil Diupdate']);
+    $kode_dept_baru = $request->kode_dept;
+    $nama_dept = $request->nama_dept;
+
+    // Perbarui data di database
+    $update = DB::table('departemen')
+        ->where('kode_dept', $kode_dept_lama)
+        ->update([
+            'kode_dept' => $kode_dept_baru,
+            'nama_dept' => $nama_dept,
+        ]);
+
+    if ($update) {
+        return Redirect::back()->with(['success' => 'Data Berhasil Diupdate']);
     } else {
-        return Redirect::back()->with(['warning'=>'Data Gagal Diupdate']);
+        return Redirect::back()->with(['warning' => 'Data Gagal Diupdate']);
     }
 }
 

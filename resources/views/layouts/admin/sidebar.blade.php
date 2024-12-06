@@ -129,11 +129,11 @@
                                 @role('administrator', 'user')
                                     <a class="dropdown-item {{ request()->is(['departemen']) ? 'active' : '' }}"
                                         href="/departemen">
-                                        Departemen
+                                        Unit Kerja
                                     </a>
                                     <a class="dropdown-item {{ request()->is(['cabang']) ? 'active' : '' }}"
                                         href="/cabang">
-                                        Kantor Cabang
+                                        Lokasi Kerja
                                     </a>
                                     <a class="dropdown-item {{ request()->is(['cuti']) ? 'active' : '' }}" href="/cuti">
                                         Cuti
@@ -256,11 +256,11 @@
                                 <div class="dropdown-menu-column">
                                     <a class="dropdown-item {{ request()->is(['konfigurasi/jamkerja']) ? 'active' : '' }}"
                                         href="/konfigurasi/jamkerja">
-                                        Jam Kerja
+                                        Data Jam Kerja
                                     </a>
                                     <a class="dropdown-item {{ request()->is(['konfigurasi/jamkerjadept']) ? 'active' : '' }}"
                                         href="/konfigurasi/jamkerjadept">
-                                        Jam Kerja Departemen
+                                        Jam Kerja Unit
                                     </a>
                                     <a class="dropdown-item {{ request()->is(['konfigurasi/users']) ? 'active' : '' }}"
                                         href="/konfigurasi/users">

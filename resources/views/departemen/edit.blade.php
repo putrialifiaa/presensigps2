@@ -20,7 +20,7 @@
                     </svg>
                 </span>
                 <input type="text" value="{{ $departemen->kode_dept }}" id="nik" class="form-control"
-                    placeholder="Kode Dept" name="kode_dept" readonly>
+                    placeholder="Kode Unit" name="kode_dept">
             </div>
         </div>
     </div>
@@ -38,7 +38,7 @@
                     </svg>
                 </span>
                 <input type="text" id="nama_dept" value="{{ $departemen->nama_dept }}" class="form-control"
-                    name="nama_dept" placeholder="Nama Departemen">
+                    name="nama_dept" placeholder="Nama Unit">
             </div>
         </div>
     </div>

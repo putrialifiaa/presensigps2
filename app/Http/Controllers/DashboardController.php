@@ -16,6 +16,11 @@ class DashboardController extends Controller
     $tahunini = date("Y"); // Menyimpan tahun ini
     $nik = Auth::guard('karyawan')->user()->nik;
 
+    // Query untuk mendapatkan data cabang
+    $cabang = DB::table('cabang')
+    ->where('kode_cabang', Auth::guard('karyawan')->user()->kode_cabang)
+    ->first();
+
     // Query untuk presensi hari ini
     $presensihariini = DB::table('presensi')
         ->where('nik', $nik) // Pastikan user yang login diambil dengan NIK yang benar
@@ -57,10 +62,8 @@ class DashboardController extends Controller
     $namabulan = ["", "Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September",
         "Oktober", "November", "Desember"];
 
-
-
     return view('dashboard.dashboard', compact('presensihariini', 'historibulanini',
-    'namabulan', 'bulanini', 'tahunini', 'rekappresensi'));
+    'namabulan', 'bulanini', 'tahunini', 'rekappresensi', 'cabang'));
 }
 
     public function dashboardadmin(){

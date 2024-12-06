@@ -7,7 +7,7 @@
                     <!--- Page pre-title --->
 
                     <h2 class="page-title">
-                        Data Kantor Cabang
+                        Data Lokasi Kerja
                     </h2>
                 </div>
             </div>
@@ -61,7 +61,14 @@
                                         <div class="row">
                                             <div class="col-10">
                                                 <select name="kode_cabang" class="form-select" id="">
-                                                    <option value="">Semua Cabang</option>
+                                                    <option value="">Semua Lokasi Kerja</option>
+                                                    @foreach ($cabang_all as $d)
+                                                        <option
+                                                            {{ Request('kode_cabang') == $d->kode_cabang ? 'selected' : '' }}
+                                                            value="{{ $d->kode_cabang }}">
+                                                            {{ $d->nama_cabang }}
+                                                        </option>
+                                                    @endforeach
                                                 </select>
                                             </div>
                                             <div class="col-2">
@@ -90,9 +97,9 @@
                                         <thead>
                                             <tr>
                                                 <th>No</th>
-                                                <th>Kode Cabang</th>
-                                                <th>Nama Cabang</th>
-                                                <th>Lokasi</th>
+                                                <th>Kode Lokasi</th>
+                                                <th>Nama Lokasi</th>
+                                                <th>Titik Koordinat</th>
                                                 <th>Radius</th>
                                                 <th>Aksi</th>
                                             </tr>
@@ -100,7 +107,7 @@
                                         <tbody>
                                             @foreach ($cabang as $d)
                                                 <tr>
-                                                    <td>{{ $loop->iteration }}</td>
+                                                    <td>{{ $loop->iteration + $cabang->firstItem() - 1 }}</td>
                                                     <td>{{ $d->kode_cabang }}</td>
                                                     <td>{{ $d->nama_cabang }}</td>
                                                     <td>{{ $d->lokasi_cabang }}</td>
@@ -151,7 +158,7 @@
                                             @endforeach
                                         </tbody>
                                     </table>
-
+                                    {{ $cabang->links('vendor.pagination.bootstrap-5') }}
                                 </div>
                             </div>
                         </div>

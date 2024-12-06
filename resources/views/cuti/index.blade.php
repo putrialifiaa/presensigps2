@@ -64,7 +64,7 @@
                                                 <th>No</th>
                                                 <th>Kode Cuti</th>
                                                 <th>Nama Cuti</th>
-                                                <th>Jumlah Hari</th>
+                                                <th>Jatah Cuti</th>
                                                 <th>Aksi</th>
                                             </tr>
                                         </thead>

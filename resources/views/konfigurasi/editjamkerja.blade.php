@@ -19,8 +19,8 @@
                         <path d="M19 11l0 2" />
                     </svg>
                 </span>
-                <input type="text" readonly id="kode_jam_kerja" value="{{ $jamkerja->kode_jam_kerja }}"
-                    class="form-control" placeholder="Kode Jam Kerja" name="kode_jam_kerja">
+                <input type="text" id="kode_jam_kerja" value="{{ $jamkerja->kode_jam_kerja }}" class="form-control"
+                    placeholder="Kode Jam Kerja" name="kode_jam_kerja">
             </div>
         </div>
     </div>

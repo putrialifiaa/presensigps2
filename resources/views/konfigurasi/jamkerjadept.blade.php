@@ -7,7 +7,7 @@
                 <div class="col">
                     <!-- Page Title -->
                     <h2 class="page-title">
-                        Konfigurasi Jam Kerja Departemen
+                        Konfigurasi Jam Kerja Unit
                     </h2>
                 </div>
             </div>
@@ -16,7 +16,7 @@
     <div class="page-body">
         <div class="container-xl">
             <div class="row">
-                <div class="col-8">
+                <div class="col-12">
                     <div class="card">
                         <div class="card-body">
                             <div class="row">
@@ -51,13 +51,49 @@
                             </div>
                             <div class="row mt-2">
                                 <div class="col-12">
+                                    <form action="/konfigurasi/jamkerjadept" method="GET">
+                                        <div class="row">
+                                            <div class="col-10">
+                                                <select name="kode_cabang" class="form-select" id="">
+                                                    <option value="">Semua Lokasi Kerja</option>
+                                                    @foreach ($cabang_all as $d)
+                                                        <option
+                                                            {{ Request('kode_cabang') == $d->kode_cabang ? 'selected' : '' }}
+                                                            value="{{ $d->kode_cabang }}">
+                                                            {{ $d->nama_cabang }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                            <div class="col-2">
+                                                <div class="form-group">
+                                                    <button type="submit" class="btn btn-primary">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="24"
+                                                            height="24" viewBox="0 0 24 24" fill="none"
+                                                            stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                                            stroke-linejoin="round"
+                                                            class="icon icon-tabler icons-tabler-outline icon-tabler-search">
+                                                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                                            <path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" />
+                                                            <path d="M21 21l-6 -6" />
+                                                        </svg>
+                                                        Cari
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="row mt-2">
+                                <div class="col-12">
                                     <table class="table table-bordered">
                                         <thead>
                                             <tr>
                                                 <th>No</th>
                                                 <th>Kode</th>
-                                                <th>Cabang</th>
-                                                <th>Departemen</th>
+                                                <th>Lokasi Kerja</th>
+                                                <th>Unit</th>
                                                 <th>Aksi</th>
                                             </tr>
                                         </thead>
@@ -107,7 +143,7 @@
                                             @endforeach
                                         </tbody>
                                     </table>
-
+                                    {{ $jamkerjadept->links('vendor.pagination.bootstrap-5') }}
                                 </div>
                             </div>
                         </div>

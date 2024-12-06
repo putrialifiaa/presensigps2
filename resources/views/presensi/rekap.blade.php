@@ -60,7 +60,7 @@
                                     <div class="col-12">
                                         <div class="form-group">
                                             <select name="kode_cabang" id="kode_cabang" class="form-select">
-                                                <option value="">Semua Cabang</option>
+                                                <option value="">Semua Lokasi Kerja</option>
                                                 @foreach ($cabang as $d)
                                                     <option value="{{ $d->kode_cabang }}">{{ $d->kode_cabang }}</option>
                                                 @endforeach

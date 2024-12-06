@@ -60,7 +60,7 @@
                                 <div class="col-12">
                                     <form action="/karyawan" method="GET">
                                         <div class="row">
-                                            <div class="col-6">
+                                            <div class="col-4">
                                                 <div class="form-group">
                                                     <input type="text" name="nama_karyawan" id="nama_karyawan"
                                                         class="form-control" placeholder="Nama Karyawan"
@@ -68,14 +68,26 @@
                                                 </div>
                                             </div>
                                             @role('administrator', 'user')
-                                                <div class="col-4">
+                                                <div class="col-3">
                                                     <div class="form-group">
                                                         <select name="kode_dept" id="kode_dept" class="form-select">
-                                                            <option value="">Departemen</option>
+                                                            <option value="">Unit</option>
                                                             @foreach ($departemen as $d)
                                                                 <option
                                                                     {{ Request('kode_dept') == $d->kode_dept ? 'selected' : '' }}
                                                                     value="{{ $d->kode_dept }}">{{ $d->nama_dept }}</option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-3">
+                                                    <div class="form-group">
+                                                        <select name="kode_cabang" class="form-select" id="">
+                                                            <option value="">Lokasi Kerja</option>
+                                                            @foreach ($cabang as $d)
+                                                                <option
+                                                                    {{ Request('kode_cabang') == $d->kode_cabang ? 'selected' : '' }}
+                                                                    value="{{ $d->kode_cabang }}">{{ $d->nama_cabang }}</option>
                                                             @endforeach
                                                         </select>
                                                     </div>
@@ -103,7 +115,7 @@
                             </div>
                             <div class="row mt-2">
                                 <div class="col-12">
-                                    <table class="table table-bordered">
+                                    <table class="table table-bordered" style="table-layout: auto; width: 100%;">
                                         <thead>
                                             <tr>
                                                 <th>No</th>
@@ -112,9 +124,9 @@
                                                 <th>Jabatan</th>
                                                 <th>No. HP</th>
                                                 <th>Foto</th>
-                                                <th>Departemen</th>
-                                                <th>Cabang</th>
-                                                <th>Aksi</th>
+                                                <th>Unit</th>
+                                                <th>Lokasi Kerja</th>
+                                                <th style="width: 135px;">Aksi</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -126,7 +138,7 @@
                                                     <td>{{ $loop->iteration + $karyawan->firstItem() - 1 }}</td>
                                                     <td>{{ $d->nik }}</td>
                                                     <td>{{ $d->nama_lengkap }}</td>
-                                                    <td>{{ $d->jabatan }}</td>
+                                                    <td>{{ strtoupper($d->jabatan) }}</td>
                                                     <td>{{ $d->no_hp }}</td>
                                                     <td>
                                                         @if (empty($d->foto))
@@ -137,16 +149,9 @@
                                                         @endif
                                                     </td>
                                                     <td>{{ $d->nama_dept }}</td>
-                                                    <td>{{ $d->kode_cabang }}</td>
+                                                    <td>{{ $d->nama_cabang }}</td>
                                                     <td>
-                                                        <style>
-                                                            .button-group .btn {
-                                                                margin-right: 3px;
-                                                                /* Atur jarak antar tombol */
-                                                            }
-                                                        </style>
-
-                                                        <div class="d-flex button-group">
+                                                        <div class="d-flex button-group gap-1">
                                                             <div>
                                                                 @role('administrator', 'user')
                                                                     <a href="#" class="edit btn btn-primary btn-sm"
@@ -167,7 +172,7 @@
                                                                     </a>
                                                                 @endrole
                                                                 <a href="/konfigurasi/{{ $d->nik }}/setjamkerja"
-                                                                    class="btn btn-success btn-sm ml-2">
+                                                                    class="btn btn-success btn-sm">
                                                                     <svg xmlns="http://www.w3.org/2000/svg" width="24"
                                                                         height="24" viewBox="0 0 24 24" fill="none"
                                                                         stroke="currentColor" stroke-width="2"
@@ -271,7 +276,7 @@
                                             <path d="M19 11l0 2" />
                                         </svg>
                                     </span>
-                                    <input type="text" maxlength="5" value="" id="nik"
+                                    <input type="text" maxlength="15" value="" id="nik"
                                         class="form-control" placeholder="NIK" name="nik">
                                 </div>
                             </div>
@@ -354,7 +359,7 @@
                         <div class="row mt-2">
                             <div class="col-12">
                                 <select name="kode_cabang" id="kode_cabang" class="form-select">
-                                    <option value="">Cabang</option>
+                                    <option value="">Pilih Cabang</option>
                                     @foreach ($cabang as $d)
                                         <option value="{{ $d->kode_cabang }}">{{ strtoupper($d->nama_cabang) }}</option>
                                     @endforeach
@@ -407,7 +412,7 @@
     <script>
         $(function() {
             // Memunculkan modal saat tombol tambah karyawan diklik
-            $("#nik").mask("00000");
+            $("#nik").mask("000000000000000");
             $("#no_hp").mask("0000000000000");
             $("#btnTambahKaryawan").click(function() {
                 $("#modal-inputkaryawan").modal("show");

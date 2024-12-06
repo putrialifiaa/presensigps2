@@ -7,7 +7,7 @@
                     <!--- Page pre-title --->
 
                     <h2 class="page-title">
-                        Data Departemen
+                        Data Unit Kerja
                     </h2>
                 </div>
             </div>
@@ -62,7 +62,7 @@
                                             <div class="col-10">
                                                 <div class="form-group">
                                                     <input type="text" name="nama_dept" id="nama_dept"
-                                                        class="form-control" placeholder="Departemen"
+                                                        class="form-control" placeholder="Unit"
                                                         value="{{ Request('nama_dept') }}">
                                                 </div>
                                             </div>
@@ -92,8 +92,8 @@
                                         <thead>
                                             <tr>
                                                 <th>No</th>
-                                                <th>Kode Dept</th>
-                                                <th>Nama Dept</th>
+                                                <th>Kode Unit</th>
+                                                <th>Nama Unit</th>
                                                 <th>Aksi</th>
                                             </tr>
                                         </thead>
@@ -164,7 +164,7 @@
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Tambah Data Departemen</h5>
+                    <h5 class="modal-title">Tambah Data Unit</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">

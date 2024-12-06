@@ -139,12 +139,12 @@ class PresensiController extends Controller
             ], 400);
         }
 
-    $maxRadius = 10000; // Radius maksimal dalam meter
+    $maxRadius = 100; // Radius maksimal dalam meter
 
     if ($radius_cabang > $maxRadius) {
         return response()->json([
             'status' => 'error',
-            'message' => 'Anda berada di luar jangkauan radius',
+            'message' => 'Anda Berada Diluar Jangkauan Radius',
             'distance' => $radius_cabang,
             'type' => 'radius'
         ], 400);
@@ -448,7 +448,7 @@ public function distance($lat1, $lon1, $lat2, $lon2)
 
         if($user->hasRole('admin cabang')){
             $presensi = DB::table('presensi')
-            ->select('presensi.*','nama_lengkap', 'cabang.nama_cabang', 'karyawan.kode_dept', 'jam_masuk', 'nama_jam_kerja', 'jam_masuk', 'jam_pulang', 'keterangan')
+            ->select('presensi.*','nama_lengkap', 'jabatan', 'cabang.nama_cabang', 'karyawan.kode_dept', 'jam_masuk', 'nama_jam_kerja', 'jam_masuk', 'jam_pulang', 'keterangan')
             ->leftJoin('jam_kerja', 'presensi.kode_jam_kerja', '=', 'jam_kerja.kode_jam_kerja')
             ->leftJoin('pengajuan_izin', 'presensi.kode_izin', '=', 'pengajuan_izin.kode_izin')
             ->join('karyawan','presensi.nik','=','karyawan.nik')
@@ -459,7 +459,7 @@ public function distance($lat1, $lon1, $lat2, $lon2)
             ->get();
         } else if ($user->hasRole('administrator')) {
             $presensi = DB::table('presensi')
-            ->select('presensi.*','nama_lengkap', 'cabang.nama_cabang','karyawan.kode_dept', 'jam_masuk', 'nama_jam_kerja', 'jam_masuk', 'jam_pulang', 'keterangan')
+            ->select('presensi.*','nama_lengkap', 'jabatan', 'cabang.nama_cabang','karyawan.kode_dept', 'jam_masuk', 'nama_jam_kerja', 'jam_masuk', 'jam_pulang', 'keterangan')
             ->leftJoin('jam_kerja', 'presensi.kode_jam_kerja', '=', 'jam_kerja.kode_jam_kerja')
             ->leftJoin('pengajuan_izin', 'presensi.kode_izin', '=', 'pengajuan_izin.kode_izin')
             ->join('karyawan','presensi.nik','=','karyawan.nik')

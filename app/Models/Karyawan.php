@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -21,17 +20,23 @@ class Karyawan extends Authenticatable
         'password',
     ];
 
-
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
-        protected function casts(): array
+    protected function casts(): array
     {
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    // Menambahkan accessor untuk memformat NIK
+    public function getNikAttribute($value)
+    {
+        // Memastikan NIK selalu memiliki format 3 digit, menambahkan '0' jika perlu
+        return str_pad($value, 5, '0', STR_PAD_LEFT);
     }
 }

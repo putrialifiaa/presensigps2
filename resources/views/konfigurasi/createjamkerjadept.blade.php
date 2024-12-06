@@ -23,7 +23,7 @@
                             <div class="col-6">
                                 <div class="form-group">
                                     <select name="kode_cabang" id="kode_cabang" class="form-select">
-                                        <option value="">Pilih Cabang</option>
+                                        <option value="">Pilih Lokasi Kerja</option>
                                         @foreach ($cabang as $d)
                                             <option value="{{ $d->kode_cabang }}">{{ strtoupper($d->nama_cabang) }}</option>
                                         @endforeach
@@ -33,7 +33,7 @@
                             <div class="col-6">
                                 <div class="form-group">
                                     <select name="kode_dept" id="kode_dept" class="form-select">
-                                        <option value="">Pilih Departemen</option>
+                                        <option value="">Pilih Unit</option>
                                         @foreach ($departemen as $d)
                                             <option value="{{ $d->kode_dept }}">{{ strtoupper($d->nama_dept) }}</option>
                                         @endforeach

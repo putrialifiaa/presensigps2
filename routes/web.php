@@ -33,7 +33,7 @@ Route::middleware(['guest:user'])->group(function () {
 
 // Rute untuk Karyawan
 Route::middleware('auth:karyawan')->group(function () {
-    Route::get('/dashboard', [DashboardController::class, 'index']);
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/proseslogout', [AuthController::class, 'proseslogout']);
 
     // Rute untuk presensi

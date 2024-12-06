@@ -19,8 +19,8 @@
                         <path d="M19 11l0 2" />
                     </svg>
                 </span>
-                <input type="text" readonly value="{{ $karyawan->nik }}" id="nik" class="form-control"
-                    placeholder="NIK" name="nik">
+                <input type="text" value="{{ $karyawan->nik }}" id="nik" class="form-control" placeholder="NIK"
+                    name="nik">
             </div>
         </div>
     </div>
@@ -94,7 +94,7 @@
     <div class="row mt-2">
         <div class="col-12">
             <select name="kode_dept" id="kode_dept" class="form-select">
-                <option value="">Departemen</option>
+                <option value="">Unit</option>
                 @foreach ($departemen as $d)
                     <option {{ $karyawan->kode_dept == $d->kode_dept ? 'selected' : '' }} value="{{ $d->kode_dept }}">
                         {{ $d->nama_dept }}</option>
@@ -105,7 +105,7 @@
     <div class="row mt-2">
         <div class="col-12">
             <select name="kode_cabang" id="kode_cabang" class="form-select">
-                <option value="">Cabang</option>
+                <option value="">Lokasi Kerja</option>
                 @foreach ($cabang as $d)
                     <option {{ $karyawan->kode_cabang == $d->kode_cabang ? 'selected' : '' }}
                         value="{{ $d->kode_cabang }}">{{ strtoupper($d->nama_cabang) }}</option>
